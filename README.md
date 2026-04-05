@@ -1,24 +1,40 @@
-# Complex-Math-Engine
-Complex Number Calculator in Java 🧮⚛️
+Quantum Computing in Java: A Pedagogical Framework ⚛️💻
+This project is a practical, step-by-step implementation of the concepts from the book "Quantum Computing for Computer Science" (by Noson S. Yanofsky and Mirco A. Mannucci).
 
-A robust terminal-based calculator built in Java to perform fundamental operations and geometric conversions with complex numbers. 
+Rather than just solving isolated exercises, the goal of this repository is to apply Software Engineering principles to build a cohesive, Object-Oriented mathematical framework. Ultimately, these foundational layers will serve as the engine for a functional Quantum State Vector Simulator.
 
-This project was developed not only as a mathematical tool, but as the **foundational layer for building a future Quantum Algorithm Simulator**, where complex numbers and polar representations (quantum phases) are essential.
+🗺️ Project Roadmap
+This project is continuously evolving as I progress through the book's chapters. Here is the current status:
 
-## 🚀 Features
+[x] Phase 1: The Math Engine (Complex Numbers) - Fundamental operations (Addition, Subtraction, Multiplication, Division).
 
-The system features an interactive menu and handles parsing text expressions, extracting values, and exception handling (such as division by zero and smart root formatting).
+Geometric conversions (Modulus, Conjugate, Polar/Cartesian representations).
 
-**Binary Operations:**
-* Addition and Subtraction.
-* Multiplication.
-* Division.
+Custom parser for trigonometric inputs (e.g., pi/3).
 
-**Unary Operations and Geometry:**
-* Modulus Calculation (with smart root formatting, e.g., `√2`).
-* Conjugate Calculation.
-* **Conversion to Polar:** Transforms `a + bi` into Radius and Angle (θ).
-* **Conversion to Cartesian:** Transforms Polar Coordinates into `a + bi`.
+[x] Phase 2: Complex Vectors (State Vectors) - Object-oriented structure using composition to represent multiple quantum states (Qubits).
 
-**Technical Highlight:**
-* **Custom Pi Parser:** The calculator features a syntax analyzer (parser) capable of interpreting natural trigonometric user inputs, such as `pi/3`, `-pi/2`, or `2pi/3`, converting them directly into radians.
+[ ] Phase 3: Complex Matrices & Tensor Products - Next Step
+
+[ ] Phase 4: Quantum Gates (Pauli, Hadamard, CNOT, etc.)
+
+[ ] Phase 5: Simulating Quantum Algorithms
+
+🧮 Current Module: The Complex Math Engine & Testing Environment
+Currently, the mathematical foundation is fully operational. It features an interactive terminal interface (ComplexCalculator) that serves as a testing ground for the underlying math engine.
+
+🏗️ Core Architecture
+The system is designed with a clean, modular Object-Oriented approach, prioritizing performance and encapsulation:
+
+ComplexNumber: The core mathematical engine. An immutable class handling all pure arithmetic and geometric math without any UI bottlenecks.
+
+ComplexVector: A composition-based data structure designed to represent state vectors (e.g., Qubits) for quantum simulations.
+
+ComplexCalculator: The interactive terminal interface that parses user input and bridges it to the engine.
+
+🚀 Features of the Testing Environment
+Robust Parsing: Handles text expressions, extracts numerical values, and manages algebraic exceptions (such as division by zero).
+
+Custom Pi Parser: A custom syntax analyzer capable of interpreting natural trigonometric user inputs, such as pi/3, -pi/2, or 2pi/3, converting them directly into radians.
+
+Smart Formatting: Visual representation of square roots for better readability (e.g., printing √2 instead of 1.4142...).
