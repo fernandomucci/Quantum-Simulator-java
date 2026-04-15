@@ -15,12 +15,20 @@ public class ComplexVector
     // Method to set a complex number at a specific position
     public void setElement(int index, ComplexNumber number)
     {
+        if (index < 0 || index >= this.elements.length)
+        {
+            throw new IllegalArgumentException("Index out of bounds for Vector.");
+        }
         this.elements[index] = number;
     }
 
     // Method to get a number from a specific position
     public ComplexNumber getElement(int index)
     {
+        if (index < 0 || index >= this.elements.length)
+        {
+            throw new IllegalArgumentException("Index out of bounds for Vector.");
+        }
         return this.elements[index];
     }
 
@@ -35,7 +43,7 @@ public class ComplexVector
             throw new IllegalArgumentException("Vectors must have the same size to be added.");
         }
 
-        // 2. Create the new vector to store the result
+        //Create the new vector to store the result
         int size = this.elements.length;
         ComplexVector result = new ComplexVector(size);
 

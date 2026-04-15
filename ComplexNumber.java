@@ -14,8 +14,13 @@ public class ComplexNumber
     // Static constructor for Polar Form
     public static ComplexNumber fromPolar(double ro, double angleRadians)
     {
-        double r = ro * Math.cos(angleRadians);
-        double i = ro * Math.sin(angleRadians);
+        double r = Math.abs(ro) * Math.cos(angleRadians + (ro < 0 ? Math.PI : 0));
+        double i = Math.abs(ro) * Math.sin(angleRadians + (ro < 0 ? Math.PI : 0));
+
+        // Rounds down to 0 any microscopic Java residue (below 10^-10)
+        if (Math.abs(r) < 1e-10) r = 0.0;
+        if (Math.abs(i) < 1e-10) i = 0.0;
+
         return new ComplexNumber(r, i);
     }
 
@@ -54,12 +59,13 @@ public class ComplexNumber
 
     public ComplexNumber divide(ComplexNumber other)
     {
-        double den = Math.pow(other.real, 2) + Math.pow(other.imag, 2);
         
-        if (den == 0)
+        if (other.real == 0 && other.imag == 0)
         {
             throw new ArithmeticException("Division by zero in complex numbers.");
         }
+        
+        double den = Math.pow(other.real, 2) + Math.pow(other.imag, 2);
 
         double newReal = (this.real * other.real + this.imag * other.imag) / den;
         double newImag = (this.imag * other.real - this.real * other.imag) / den;
@@ -84,14 +90,19 @@ public class ComplexNumber
         return new double[]{modulus, angle};
     }
 
+    private static boolean isWholeNumber(double value)
+    {
+        return !Double.isInfinite(value) && value == Math.floor(value);
+    }
+
 
     // FORMATTING
 
-    @Override
+   @Override
     public String toString()
     {
-        String realStr = (this.real == (long) this.real) ? String.format("%d", (long) this.real) : String.format("%.2f", this.real);
-        String imagStr = (Math.abs(this.imag) == (long) Math.abs(this.imag)) ? String.format("%d", (long) Math.abs(this.imag)) : String.format("%.2f", Math.abs(this.imag));
+        String realStr = isWholeNumber(this.real) ? String.format("%d", (long) this.real) : String.format("%.2f", this.real);
+        String imagStr = isWholeNumber(Math.abs(this.imag)) ? String.format("%d", (long) Math.abs(this.imag)) : String.format("%.2f", Math.abs(this.imag));
 
         if (this.real == 0 && this.imag == 0) return "0";
         if (this.real == 0) return (this.imag < 0 ? "-" : "") + imagStr + "i";
