@@ -127,6 +127,54 @@ public class ComplexMatrices
         return result;
     }
 
+   
+    public ComplexMatrices matrixMultiplication(ComplexMatrices other)
+    {
+        // Retrieve dimensions for clarity and bound checking
+        int thisRows = this.elements.length;
+        int thisCols = this.elements[0].length;
+        int otherRows = other.elements.length;
+        int otherCols = other.elements[0].length;
+
+        // Mathematical requirement: Columns of Matrix A must equal Rows of Matrix B
+        if (thisCols != otherRows)
+        {
+            throw new IllegalArgumentException(
+                "Incompatible dimensions: Number of columns in the first matrix (" + thisCols + 
+                ") must match the number of rows in the second matrix (" + otherRows + ")."
+            );
+        }
+
+        // Initialize the result matrix with dimensions (Rows of A) x (Columns of B)
+        ComplexMatrices result = new ComplexMatrices(thisRows, otherCols);
+
+        // Optimized matrix multiplication (i-k-j order) for sequential memory access
+        for (int i = 0; i < thisRows; i++)
+        {
+            for (int k = 0; k < thisCols; k++)
+            {
+                // Cache a single element from Matrix A (this matrix)
+                ComplexNumber numA = this.elements[i][k];
+                
+                // Iterate through the columns of Matrix B sequentially (j-loop)
+                for (int j = 0; j < otherCols; j++)
+                {
+                    // Retrieve element from Matrix B
+                    ComplexNumber numB = other.getElement(k, j);
+                    
+                    // Multiply the cached element of A with the current element of B
+                    ComplexNumber product = numA.multiply(numB);
+                    
+                    // Accumulate the product into the partial sum of the result matrix
+                    ComplexNumber currentResult = result.getElement(i, j);
+                    result.setElement(i, j, currentResult.add(product));
+                }
+            }
+        }
+
+        return result;
+    }
+
 
     //FORMAT
     public String toString()
