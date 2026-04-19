@@ -439,6 +439,7 @@ public class ComplexCalculator
         System.out.println("[1] Matrix Addition");
         System.out.println("[2] Additive Inverse");
         System.out.println("[3] Scalar Multiplication");
+        System.out.println("[4] Matrix Multiplication");
         System.out.println("[0] Back");
         System.out.println("===================================");
         System.out.print("Choose an option: ");
@@ -479,6 +480,11 @@ public class ComplexCalculator
                     System.out.println("\n--- RESULT ---");
                     System.out.println(m4.scalarMultiply(scalar));
                     break;
+                case 4:
+                    ComplexMatrices m5 = readMatrix(sc, "Matrix 1");
+                    ComplexMatrices m6 = readMatrix(sc, "Matrix 2");
+                    System.out.println("\n--- RESULT ---");
+                    System.out.println(m5.matrixMultiplication(m6));
                 default:
                     System.out.println("Choose a valid menu option.");
             }
