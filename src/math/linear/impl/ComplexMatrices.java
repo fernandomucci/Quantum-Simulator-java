@@ -27,8 +27,8 @@ public class ComplexMatrices  implements IMatrix
         return this.elements.length;
     }
 
-    //method to get the number os cols
-    public int getCols()
+    //method to get the number of cols
+    public int getCol()
     {
         return this.elements[0].length;
     }
