@@ -1,5 +1,8 @@
+package math.linear.impl;
+import math.core.ComplexNumber;
+import math.linear.interfaces.IMatrix;
 
-public class ComplexMatrices
+public class ComplexMatrices  implements IMatrix
 {
     private ComplexNumber[][] elements;
     
@@ -16,6 +19,18 @@ public class ComplexMatrices
             }
            
         }
+    }
+
+    //method to get the number of rows
+    public int getRows()
+    {
+        return this.elements.length;
+    }
+
+    //method to get the number os cols
+    public int getCols()
+    {
+        return this.elements[0].length;
     }
 
     // Method to set a complex number at a specific position

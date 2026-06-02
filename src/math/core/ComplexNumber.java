@@ -1,3 +1,4 @@
+package math.core;
 public class ComplexNumber
 {
     // final because the number must be immutable
