@@ -22,18 +22,21 @@ public class ComplexMatrices  implements IMatrix
     }
 
     //method to get the number of rows
+    @Override
     public int getRows()
     {
         return this.elements.length;
     }
 
     //method to get the number of cols
-    public int getCol()
+    @Override
+    public int getCols()
     {
         return this.elements[0].length;
     }
 
     // Method to set a complex number at a specific position
+    @Override
     public void setElement(int row, int col, ComplexNumber number)
     {
         if (row < 0 || row >= this.elements.length || col < 0 || col >= this.elements[0].length)
@@ -44,6 +47,7 @@ public class ComplexMatrices  implements IMatrix
     }
 
     // Method to get a number from a specific position
+    @Override
     public ComplexNumber getElement(int row, int col)
     {
         if (row < 0 || row >= this.elements.length || col < 0 || col >= this.elements[0].length)
@@ -54,6 +58,7 @@ public class ComplexMatrices  implements IMatrix
     }
 
     //Method to add two matrices
+    @Override
     public ComplexMatrices add(ComplexMatrices other)
     {
         // Math rule: Matrices must be the same size to be added (Rows AND Columns)
@@ -87,6 +92,7 @@ public class ComplexMatrices  implements IMatrix
     }
 
     //Method to calculate the additive inverse of the vector
+    @Override
     public ComplexMatrices inverse()
     {
         //creat a new matrice to store the result
@@ -117,6 +123,7 @@ public class ComplexMatrices  implements IMatrix
     }
 
     //Method to multiply by scalar
+    @Override
     public ComplexMatrices scalarMultiply(ComplexNumber scalaNumber)
     {
         //creat a new matrice to store the result
@@ -143,6 +150,7 @@ public class ComplexMatrices  implements IMatrix
     }
 
    
+    @Override
     public ComplexMatrices matrixMultiplication(ComplexMatrices other)
     {
         // Retrieve dimensions for clarity and bound checking
@@ -190,8 +198,76 @@ public class ComplexMatrices  implements IMatrix
         return result;
     }
 
+    @Override
+    public ComplexMatrices transposeComplexMatrices()
+    {
+        int originalRows = this.elements.length;
+        int originalCols = this.elements[0].length;
+
+        ComplexMatrices transpose = new ComplexMatrices(originalCols, originalRows);
+
+        for(int i = 0; i < originalRows; i++)
+        {
+            for(int j = 0; j < originalCols; j++)
+            {
+                ComplexNumber number = this.elements[i][j];
+                transpose.setElement(j, i, number);
+            }
+        }
+
+        return transpose;
+
+    }
+
+    @Override
+    public ComplexMatrices conjugMatrices()
+    {
+        int rows = this.elements.length;
+        int cols = this.elements[0].length;
+        
+        ComplexMatrices result = new ComplexMatrices(rows, cols);
+
+        for(int i = 0; i < rows; i++)
+        {
+            for(int j = 0; j < cols; j++)
+            {
+                ComplexNumber numberConjugade = this.elements[i][j].conjugate();
+                result.setElement(i, j, numberConjugade);
+            }
+        }
+
+        return result;
+    }
+
+    @Override
+    public ComplexMatrices dagger()
+    {
+        return this.transposeComplexMatrices().conjugMatrices();
+    }
+
+    @Override
+    public ComplexNumber trace()
+    {
+        int rows = this.elements.length;
+        int cols = this.elements[0].length;
+
+            if (rows != cols)
+            {
+                throw new IllegalArgumentException("O traço só pode ser calculado para matrizes quadradas.");
+            }
+
+        ComplexNumber sum = new ComplexNumber(0, 0);
+
+            for (int i = 0; i < rows; i++)
+            {
+                sum = sum.add(this.elements[i][i]);
+            }
+
+        return sum;
+    }
 
     //FORMAT
+    @Override
     public String toString()
     {
         StringBuilder sb = new StringBuilder();

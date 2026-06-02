@@ -15,6 +15,8 @@ public interface IMatrix
     ComplexMatrices inverse();
     ComplexMatrices scalarMultiply(ComplexNumber scalarNumber);
     ComplexMatrices matrixMultiplication(ComplexMatrices other);
-    ComplexMatrices transposeComplexMatrices(ComplexMatrices m1);
-    ComplexMatrices conjugMatrices(ComplexMatrices m1);
+    ComplexMatrices transposeComplexMatrices();
+    ComplexMatrices conjugMatrices();
+    ComplexMatrices dagger();
+    ComplexNumber trace();
 }
