@@ -1,9 +1,9 @@
-import java.util.Scanner;
+package ui;
 
-/**
- * Main driver class for the Complex Calculator.
- * Handles user interface, menu navigation, and robust input validation.
- */
+import java.util.Scanner;
+import math.core.*;
+import math.linear.impl.*;
+
 public class ComplexCalculator
 {
     public static void main(String[] args)
@@ -26,7 +26,6 @@ public class ComplexCalculator
             
             try
             {
-                // Reading the whole line prevents scanner buffer issues
                 choice = Integer.parseInt(sc.nextLine().trim());
             }
             catch (NumberFormatException e)
@@ -71,7 +70,6 @@ public class ComplexCalculator
         System.out.print("Choose an option: ");
 
         int choice;
-
         try
         {
             choice = Integer.parseInt(sc.nextLine().trim());
@@ -142,7 +140,6 @@ public class ComplexCalculator
         if (choice == 0) return;
 
         ComplexNumber n1;
-
         try 
         {
             if (choice == 4)
@@ -193,14 +190,9 @@ public class ComplexCalculator
         }
     }
 
-    /**
-     * Parses a standard complex number string into a ComplexNumber object.
-     * Throws an exception if the format is invalid.
-     */
     private static ComplexNumber parseComplex(String nc) throws IllegalArgumentException
     {
         nc = nc.toLowerCase();
-        
         try 
         {
             String[] parts = nc.split("(?<![eE])(?=[+-])");
@@ -227,9 +219,6 @@ public class ComplexCalculator
         }
     }
 
-    /**
-     * Extracts the numeric coefficient of the imaginary part.
-     */
     private static double extractValue(String s) throws NumberFormatException
     {
         String cleaned = s.replace("i", "");
@@ -238,15 +227,11 @@ public class ComplexCalculator
         return Double.parseDouble(cleaned);
     }
 
-    /**
-     * Parses a polar string format (r, theta) into a Cartesian ComplexNumber.
-     */
     private static ComplexNumber parsePolar(String nc) throws IllegalArgumentException
     {
         try 
         {
             String[] parts = nc.split(","); 
-                    
             if (parts.length < 2)
             {
                 throw new IllegalArgumentException("Invalid polar format. Use a comma to separate r and theta.");
@@ -263,9 +248,6 @@ public class ComplexCalculator
         }
     }
 
-    /**
-     * Converts an angle string (optionally containing 'pi') to radians.
-     */
     private static double readValueWithPi(String nc) throws NumberFormatException
     {
         nc = nc.toLowerCase().trim();
@@ -312,9 +294,6 @@ public class ComplexCalculator
         return sign * multiplier * Math.PI / divisor;
     }
 
-    /**
-     * Formats square roots for cleaner console output.
-     */
     public static String formatRoot(double value)
     {
         double square = value * value;
@@ -389,9 +368,6 @@ public class ComplexCalculator
         }
     }
 
-    /**
-     * Prompts the user to define and populate a ComplexVector safely.
-     */
     public static ComplexVector readVector(Scanner sc, String name) 
     {
         int size = 0;
@@ -422,7 +398,7 @@ public class ComplexCalculator
                     System.out.print("Element [" + i + "] (e.g., 2+3i): ");
                     String input = sc.nextLine().replace(" ", "");
                     vec.setElement(i, parseComplex(input));
-                    break; // Move to the next element if successful
+                    break;
                 } 
                 catch (IllegalArgumentException e) 
                 {
@@ -485,6 +461,7 @@ public class ComplexCalculator
                     ComplexMatrices m6 = readMatrix(sc, "Matrix 2");
                     System.out.println("\n--- RESULT ---");
                     System.out.println(m5.matrixMultiplication(m6));
+                    break; // Corrigido o break faltante aqui!
                 default:
                     System.out.println("Choose a valid menu option.");
             }
@@ -495,9 +472,6 @@ public class ComplexCalculator
         }
     }
 
-    /**
-     * Prompts the user to define and populate a ComplexMatrices safely.
-     */
     public static ComplexMatrices readMatrix(Scanner sc, String name) 
     {
         int rows = 0, cols = 0;
@@ -533,7 +507,7 @@ public class ComplexCalculator
                         System.out.print("Element [" + i + "][" + j + "] (e.g., 2+3i): ");
                         String input = sc.nextLine().replace(" ", "");
                         mat.setElement(i, j, parseComplex(input));
-                        break; // Move to the next element if successful
+                        break;
                     } 
                     catch (IllegalArgumentException e) 
                     {

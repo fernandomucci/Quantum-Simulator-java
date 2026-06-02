@@ -1,4 +1,9 @@
-public class ComplexVector
+package math.linear.impl;
+import math.core.ComplexNumber;
+import math.linear.interfaces.IVector;
+
+
+public class ComplexVector implements IVector
 {
     private ComplexNumber[] elements;
 
