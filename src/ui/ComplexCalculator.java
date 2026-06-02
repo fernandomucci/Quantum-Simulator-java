@@ -4,6 +4,11 @@ import java.util.Scanner;
 import math.core.*;
 import math.linear.impl.*;
 
+/**
+ * Main driver class for the Complex Calculator.
+ * Handles user interface, menu navigation, and robust input validation.
+ * Enhanced to support advanced linear algebra and quantum computing operations.
+ */
 public class ComplexCalculator
 {
     public static void main(String[] args)
@@ -409,6 +414,10 @@ public class ComplexCalculator
         return vec;
     }
 
+    /**
+     * Interactive menu for advanced Matrix operations.
+     * Note: Quantum State Vectors can be processed here as Nx1 or 1xN matrices.
+     */
     public static void matrixMenu(Scanner sc)
     {
         System.out.println("\n=========== MATRIX MENU ===========");
@@ -416,6 +425,11 @@ public class ComplexCalculator
         System.out.println("[2] Additive Inverse");
         System.out.println("[3] Scalar Multiplication");
         System.out.println("[4] Matrix Multiplication");
+        System.out.println("[5] Transpose Matrix");
+        System.out.println("[6] Conjugate Matrix");
+        System.out.println("[7] Dagger (Conjugate Transpose)");
+        System.out.println("[8] Trace (Diagonal Sum)");
+        System.out.println("[9] Universal Inner Product");
         System.out.println("[0] Back");
         System.out.println("===================================");
         System.out.print("Choose an option: ");
@@ -461,7 +475,34 @@ public class ComplexCalculator
                     ComplexMatrices m6 = readMatrix(sc, "Matrix 2");
                     System.out.println("\n--- RESULT ---");
                     System.out.println(m5.matrixMultiplication(m6));
-                    break; // Corrigido o break faltante aqui!
+                    break; 
+                case 5:
+                    ComplexMatrices m7 = readMatrix(sc, "Matrix");
+                    System.out.println("\n--- RESULT ---");
+                    System.out.println(m7.transposeComplexMatrices());
+                    break;
+                case 6:
+                    ComplexMatrices m8 = readMatrix(sc, "Matrix");
+                    System.out.println("\n--- RESULT ---");
+                    System.out.println(m8.conjugMatrices());
+                    break;
+                case 7:
+                    ComplexMatrices m9 = readMatrix(sc, "Matrix");
+                    System.out.println("\n--- RESULT ---");
+                    System.out.println(m9.dagger());
+                    break;
+                case 8:
+                    ComplexMatrices m10 = readMatrix(sc, "Matrix");
+                    System.out.println("\n--- RESULT ---");
+                    System.out.println("Trace: " + m10.trace());
+                    break;
+                case 9:
+                    System.out.println("\n* Hint: To compute Vector Inner Product, define them as Nx1 matrices.");
+                    ComplexMatrices mat1 = readMatrix(sc, "Matrix/Vector 1");
+                    ComplexMatrices mat2 = readMatrix(sc, "Matrix/Vector 2");
+                    System.out.println("\n--- RESULT ---");
+                    System.out.println("Inner Product <1, 2>: " + InnerProduct.innerPeodutcValue(mat1, mat2));
+                    break;
                 default:
                     System.out.println("Choose a valid menu option.");
             }
