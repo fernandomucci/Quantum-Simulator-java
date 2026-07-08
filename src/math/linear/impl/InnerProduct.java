@@ -4,7 +4,7 @@ import math.core.ComplexNumber;
 
 public class InnerProduct
 {
-    public static ComplexNumber innerPeodutcValue(ComplexMatrices m1,ComplexMatrices m2)
+    public static ComplexNumber innerProdutcValue(ComplexMatrices m1,ComplexMatrices m2)
     {
         if (m1 == null || m2 == null)
         {
@@ -25,7 +25,7 @@ public class InnerProduct
         }
 
         //< v , v >
-        ComplexNumber innerProductByItself = innerPeodutcValue(m1, m1);
+        ComplexNumber innerProductByItself = innerProdutcValue(m1, m1);
 
         //square < v , v >
         double normDouble = Math.sqrt(innerProductByItself.getReal());

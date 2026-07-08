@@ -559,7 +559,7 @@ public class ComplexCalculator
                     ComplexMatrices mat1 = readMatrix(sc, "Matrix 1");
                     ComplexMatrices mat2 = readMatrix(sc, "Matrix 2");
                     System.out.println("\n--- RESULT ---");
-                    System.out.println("Matrix Inner Product <1, 2>: " + InnerProduct.innerPeodutcValue(mat1, mat2));
+                    System.out.println("Matrix Inner Product <1, 2>: " + InnerProduct.innerProdutcValue(mat1, mat2));
                     break;
                 case 10:
                     ComplexMatrices matNorm = readMatrix(sc, "Matrix");
