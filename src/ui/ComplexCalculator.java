@@ -323,6 +323,8 @@ public class ComplexCalculator
         System.out.println("[1] Vector Addition");
         System.out.println("[2] Additive Inverse");
         System.out.println("[3] Scalar Multiplication");
+        System.out.println("[4] Vector Inner Product");
+        System.out.println("[5] Vector Norm (Length)");
         System.out.println("[0] Back");
         System.out.println("===================================");
         System.out.print("Choose an option: ");
@@ -362,6 +364,17 @@ public class ComplexCalculator
                     
                     System.out.println("\n--- RESULT ---");
                     System.out.println(v4.scalarMultiply(scalar));
+                    break;
+                case 4:
+                    ComplexMatrices vecMat1 = readVectorAsMatrix(sc, "Vector 1");
+                    ComplexMatrices vecMat2 = readVectorAsMatrix(sc, "Vector 2");
+                    System.out.println("\n--- RESULT ---");
+                    System.out.println("Vector Inner Product: " + InnerProduct.innerPeodutcValue(vecMat1, vecMat2));
+                    break;
+                case 5:
+                    ComplexMatrices vecMat = readVectorAsMatrix(sc, "Vector");
+                    System.out.println("\n--- RESULT ---");
+                    System.out.println("Vector Norm (Length): " + InnerProduct.normValue(vecMat));
                     break;
                 default:
                     System.out.println("Choose a valid menu option.");
@@ -415,6 +428,51 @@ public class ComplexCalculator
     }
 
     /**
+     * Helper method to read a vector structure directly into a column Matrix (Nx1)
+     * to keep universal compatibility with the InnerProduct utility engine.
+     */
+    private static ComplexMatrices readVectorAsMatrix(Scanner sc, String name)
+    {
+        int size = 0;
+        while (true) 
+        {
+            try 
+            {
+                System.out.print("\nEnter the size of " + name + ": ");
+                size = Integer.parseInt(sc.nextLine().trim());
+                if (size > 0) break;
+                System.out.println("Size must be greater than zero.");
+            } 
+            catch (NumberFormatException e) 
+            {
+                System.out.println("Invalid input. Please enter a valid integer.");
+            }
+        }
+        
+        ComplexMatrices mat = new ComplexMatrices(size, 1);
+
+        System.out.println("Entering elements for " + name + "...");
+        for (int i = 0; i < size; i++) 
+        {
+            while (true) 
+            {
+                try 
+                {
+                    System.out.print("Element [" + i + "] (e.g., 2+3i): ");
+                    String input = sc.nextLine().replace(" ", "");
+                    mat.setElement(i, 0, parseComplex(input));
+                    break;
+                } 
+                catch (IllegalArgumentException e) 
+                {
+                    System.out.println("Invalid format. Try again.");
+                }
+            }
+        }
+        return mat;
+    }
+
+    /**
      * Interactive menu for advanced Matrix operations.
      * Note: Quantum State Vectors can be processed here as Nx1 or 1xN matrices.
      */
@@ -429,7 +487,8 @@ public class ComplexCalculator
         System.out.println("[6] Conjugate Matrix");
         System.out.println("[7] Dagger (Conjugate Transpose)");
         System.out.println("[8] Trace (Diagonal Sum)");
-        System.out.println("[9] Universal Inner Product");
+        System.out.println("[9] Matrix Inner Product");
+        System.out.println("[10] Matrix Norm");
         System.out.println("[0] Back");
         System.out.println("===================================");
         System.out.print("Choose an option: ");
@@ -497,11 +556,15 @@ public class ComplexCalculator
                     System.out.println("Trace: " + m10.trace());
                     break;
                 case 9:
-                    System.out.println("\n* Hint: To compute Vector Inner Product, define them as Nx1 matrices.");
-                    ComplexMatrices mat1 = readMatrix(sc, "Matrix/Vector 1");
-                    ComplexMatrices mat2 = readMatrix(sc, "Matrix/Vector 2");
+                    ComplexMatrices mat1 = readMatrix(sc, "Matrix 1");
+                    ComplexMatrices mat2 = readMatrix(sc, "Matrix 2");
                     System.out.println("\n--- RESULT ---");
-                    System.out.println("Inner Product <1, 2>: " + InnerProduct.innerPeodutcValue(mat1, mat2));
+                    System.out.println("Matrix Inner Product <1, 2>: " + InnerProduct.innerProdutcValue(mat1, mat2));
+                    break;
+                case 10:
+                    ComplexMatrices matNorm = readMatrix(sc, "Matrix");
+                    System.out.println("\n--- RESULT ---");
+                    System.out.println("Matrix Norm: " + InnerProduct.normValue(matNorm));
                     break;
                 default:
                     System.out.println("Choose a valid menu option.");
