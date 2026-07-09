@@ -3,6 +3,7 @@ package ui;
 import java.util.Scanner;
 import math.core.*;
 import math.linear.impl.*;
+import math.linear.interfaces.IInnerProduct;
 
 /**
  * Main driver class for the Complex Calculator.
@@ -11,6 +12,9 @@ import math.linear.impl.*;
  */
 public class ComplexCalculator
 {
+  
+    private static final IInnerProduct innerProduct = new InnerProduct();
+
     public static void main(String[] args)
     {
         Scanner sc = new Scanner(System.in);
@@ -179,7 +183,7 @@ public class ComplexCalculator
                     double[] polar = n1.toPolar();
                     System.out.println("Polar Form:");
                     System.out.println("r = " + formatRoot(polar[0]));
-                    System.out.println("Angle (θ) = " + String.format("%.2f", Math.toDegrees(polar[1])) + " degrees");
+                    System.out.println("Angle (\u03b8) = " + String.format("%.2f", Math.toDegrees(polar[1])) + " degrees");
                     break;
                 case 4:
                     System.out.println("Cartesian Form:");
@@ -325,6 +329,9 @@ public class ComplexCalculator
         System.out.println("[3] Scalar Multiplication");
         System.out.println("[4] Vector Inner Product");
         System.out.println("[5] Vector Norm (Length)");
+        System.out.println("[6] Check Orthogonality");
+        System.out.println("[7] Check Orthonormality");
+        System.out.println("[8] Angle Between Vectors");
         System.out.println("[0] Back");
         System.out.println("===================================");
         System.out.print("Choose an option: ");
@@ -369,12 +376,30 @@ public class ComplexCalculator
                     ComplexMatrices vecMat1 = readVectorAsMatrix(sc, "Vector 1");
                     ComplexMatrices vecMat2 = readVectorAsMatrix(sc, "Vector 2");
                     System.out.println("\n--- RESULT ---");
-                    System.out.println("Vector Inner Product: " + InnerProduct.innerProductValue(vecMat1, vecMat2));
+                    System.out.println("Vector Inner Product: " + innerProduct.innerProductValue(vecMat1, vecMat2));
                     break;
                 case 5:
                     ComplexMatrices vecMat = readVectorAsMatrix(sc, "Vector");
                     System.out.println("\n--- RESULT ---");
-                    System.out.println("Vector Norm (Length): " + InnerProduct.normValue(vecMat));
+                    System.out.println("Vector Norm (Length): " + innerProduct.normValue(vecMat));
+                    break;
+                case 6:
+                    ComplexMatrices orthoV1 = readVectorAsMatrix(sc, "Vector 1");
+                    ComplexMatrices orthoV2 = readVectorAsMatrix(sc, "Vector 2");
+                    System.out.println("\n--- RESULT ---");
+                    System.out.println("Orthogonal? " + innerProduct.orthogonal(orthoV1, orthoV2));
+                    break;
+                case 7:
+                    ComplexMatrices orthonV1 = readVectorAsMatrix(sc, "Vector 1");
+                    ComplexMatrices orthonV2 = readVectorAsMatrix(sc, "Vector 2");
+                    System.out.println("\n--- RESULT ---");
+                    System.out.println("Orthonormal? " + innerProduct.orthonormal(orthonV1, orthonV2));
+                    break;
+                case 8:
+                    ComplexMatrices angleV1 = readVectorAsMatrix(sc, "Vector 1");
+                    ComplexMatrices angleV2 = readVectorAsMatrix(sc, "Vector 2");
+                    System.out.println("\n--- RESULT ---");
+                    System.out.printf("Angle between vectors: %.2f degrees%n", innerProduct.angle(angleV1, angleV2));
                     break;
                 default:
                     System.out.println("Choose a valid menu option.");
@@ -491,6 +516,9 @@ public class ComplexCalculator
         System.out.println("[10] Matrix Inner Product");
         System.out.println("[11] Matrix Norm");
         System.out.println("[12] Matrix Distance");
+        System.out.println("[13] Check Orthogonality");
+        System.out.println("[14] Check Orthonormality");
+        System.out.println("[15] Angle Between Matrices");
         System.out.println("[0] Back");
         System.out.println("===================================");
         System.out.print("Choose an option: ");
@@ -567,18 +595,36 @@ public class ComplexCalculator
                     ComplexMatrices mat1 = readMatrix(sc, "Matrix 1");
                     ComplexMatrices mat2 = readMatrix(sc, "Matrix 2");
                     System.out.println("\n--- RESULT ---");
-                    System.out.println("Matrix Inner Product <1, 2>: " + InnerProduct.innerProductValue(mat1, mat2));
+                    System.out.println("Matrix Inner Product <1, 2>: " + innerProduct.innerProductValue(mat1, mat2));
                     break;
                 case 11:
                     ComplexMatrices matNorm = readMatrix(sc, "Matrix");
                     System.out.println("\n--- RESULT ---");
-                    System.out.println("Matrix Norm: " + InnerProduct.normValue(matNorm));
+                    System.out.println("Matrix Norm: " + innerProduct.normValue(matNorm));
                     break;
                 case 12:
                     ComplexMatrices matx1 = readMatrix(sc, "Matrix 1");
                     ComplexMatrices matx2 = readMatrix(sc, "Matrix 2");
                     System.out.println("\n--- RESULT ---");
-                    System.out.println("Matrix distance <1, 2>: " + InnerProduct.distance(matx1, matx2));
+                    System.out.println("Matrix distance <1, 2>: " + innerProduct.distance(matx1, matx2));
+                    break;
+                case 13:
+                    ComplexMatrices orthoM1 = readMatrix(sc, "Matrix 1");
+                    ComplexMatrices orthoM2 = readMatrix(sc, "Matrix 2");
+                    System.out.println("\n--- RESULT ---");
+                    System.out.println("Orthogonal? " + innerProduct.orthogonal(orthoM1, orthoM2));
+                    break;
+                case 14:
+                    ComplexMatrices orthonM1 = readMatrix(sc, "Matrix 1");
+                    ComplexMatrices orthonM2 = readMatrix(sc, "Matrix 2");
+                    System.out.println("\n--- RESULT ---");
+                    System.out.println("Orthonormal? " + innerProduct.orthonormal(orthonM1, orthonM2));
+                    break;
+                case 15:
+                    ComplexMatrices angleM1 = readMatrix(sc, "Matrix 1");
+                    ComplexMatrices angleM2 = readMatrix(sc, "Matrix 2");
+                    System.out.println("\n--- RESULT ---");
+                    System.out.printf("Angle between matrices: %.2f degrees%n", innerProduct.angle(angleM1, angleM2));
                     break;
 
                 default:
