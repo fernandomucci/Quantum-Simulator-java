@@ -91,6 +91,41 @@ public class ComplexMatrices  implements IMatrix
         return result;
     }
 
+
+    //Method to subtract two matrices
+    public ComplexMatrices subtract(ComplexMatrices other)
+    {
+         // Math rule: Matrices must be the same size to be added (Rows AND Columns)
+        if(this.elements.length != other.elements.length || this.elements[0].length != other.elements[0].length)
+        {
+             throw new IllegalArgumentException("Matrices must have the same size (rows and columns) to be added.");
+        }
+
+         //Create a new Matrice to store the result
+        int row = this.elements.length;
+        int col = this.elements[0].length;
+        ComplexMatrices result = new ComplexMatrices(row, col);
+
+        
+        for(int i = 0; i < row; i++)
+        {
+            for(int j = 0; j < col; j++)
+            {
+                //get the number from both matrice
+                ComplexNumber num1 = this.elements[i][j];
+                ComplexNumber num2 = other.getElement(i, j);
+
+                //already created in ComplexNumber
+                ComplexNumber sum = num1.subtract(num2);
+
+                //put the result in the new matrice
+                result.setElement(i, j, sum);
+            }
+        }
+
+        return result;
+    }
+
     //Method to calculate the additive inverse of the vector
     @Override
     public ComplexMatrices inverse()
