@@ -33,4 +33,5 @@ public class InnerProduct
         return new ComplexNumber(normDouble, 0);
        
     }
+
 }

@@ -369,7 +369,7 @@ public class ComplexCalculator
                     ComplexMatrices vecMat1 = readVectorAsMatrix(sc, "Vector 1");
                     ComplexMatrices vecMat2 = readVectorAsMatrix(sc, "Vector 2");
                     System.out.println("\n--- RESULT ---");
-                    System.out.println("Vector Inner Product: " + InnerProduct.innerPeodutcValue(vecMat1, vecMat2));
+                    System.out.println("Vector Inner Product: " + InnerProduct.innerProdutcValue(vecMat1, vecMat2));
                     break;
                 case 5:
                     ComplexMatrices vecMat = readVectorAsMatrix(sc, "Vector");
@@ -480,15 +480,16 @@ public class ComplexCalculator
     {
         System.out.println("\n=========== MATRIX MENU ===========");
         System.out.println("[1] Matrix Addition");
-        System.out.println("[2] Additive Inverse");
-        System.out.println("[3] Scalar Multiplication");
-        System.out.println("[4] Matrix Multiplication");
-        System.out.println("[5] Transpose Matrix");
-        System.out.println("[6] Conjugate Matrix");
-        System.out.println("[7] Dagger (Conjugate Transpose)");
-        System.out.println("[8] Trace (Diagonal Sum)");
-        System.out.println("[9] Matrix Inner Product");
-        System.out.println("[10] Matrix Norm");
+        System.out.println("[2] Matrix Addition");
+        System.out.println("[3] Additive Inverse");
+        System.out.println("[4] Scalar Multiplication");
+        System.out.println("[5] Matrix Multiplication");
+        System.out.println("[6] Transpose Matrix");
+        System.out.println("[7] Conjugate Matrix");
+        System.out.println("[8] Dagger (Conjugate Transpose)");
+        System.out.println("[9] Trace (Diagonal Sum)");
+        System.out.println("[10] Matrix Inner Product");
+        System.out.println("[11] Matrix Norm");
         System.out.println("[0] Back");
         System.out.println("===================================");
         System.out.print("Choose an option: ");
@@ -517,11 +518,17 @@ public class ComplexCalculator
                     System.out.println(m1.add(m2));
                     break;
                 case 2:
+                    ComplexMatrices mx1 = readMatrix(sc, "Matrix 1");
+                    ComplexMatrices mx2 = readMatrix(sc, "Matrix 2");
+                    System.out.println("\n--- RESULT ---");
+                    System.out.println(mx1.subtract(mx2));
+                    break;
+                case 3:
                     ComplexMatrices m3 = readMatrix(sc, "Matrix");
                     System.out.println("\n--- RESULT ---");
                     System.out.println(m3.inverse());
                     break;
-                case 3:
+                case 4:
                     ComplexMatrices m4 = readMatrix(sc, "Matrix");
                     System.out.println("Enter the scalar (Complex Number, e.g., 2 or 3i):");
                     ComplexNumber scalar = parseComplex(sc.nextLine().replace(" ", ""));
@@ -529,39 +536,39 @@ public class ComplexCalculator
                     System.out.println("\n--- RESULT ---");
                     System.out.println(m4.scalarMultiply(scalar));
                     break;
-                case 4:
+                case 5:
                     ComplexMatrices m5 = readMatrix(sc, "Matrix 1");
                     ComplexMatrices m6 = readMatrix(sc, "Matrix 2");
                     System.out.println("\n--- RESULT ---");
                     System.out.println(m5.matrixMultiplication(m6));
                     break; 
-                case 5:
+                case 6:
                     ComplexMatrices m7 = readMatrix(sc, "Matrix");
                     System.out.println("\n--- RESULT ---");
                     System.out.println(m7.transposeComplexMatrices());
                     break;
-                case 6:
+                case 7:
                     ComplexMatrices m8 = readMatrix(sc, "Matrix");
                     System.out.println("\n--- RESULT ---");
                     System.out.println(m8.conjugMatrices());
                     break;
-                case 7:
+                case 8:
                     ComplexMatrices m9 = readMatrix(sc, "Matrix");
                     System.out.println("\n--- RESULT ---");
                     System.out.println(m9.dagger());
                     break;
-                case 8:
+                case 9:
                     ComplexMatrices m10 = readMatrix(sc, "Matrix");
                     System.out.println("\n--- RESULT ---");
                     System.out.println("Trace: " + m10.trace());
                     break;
-                case 9:
+                case 10:
                     ComplexMatrices mat1 = readMatrix(sc, "Matrix 1");
                     ComplexMatrices mat2 = readMatrix(sc, "Matrix 2");
                     System.out.println("\n--- RESULT ---");
                     System.out.println("Matrix Inner Product <1, 2>: " + InnerProduct.innerProdutcValue(mat1, mat2));
                     break;
-                case 10:
+                case 11:
                     ComplexMatrices matNorm = readMatrix(sc, "Matrix");
                     System.out.println("\n--- RESULT ---");
                     System.out.println("Matrix Norm: " + InnerProduct.normValue(matNorm));
