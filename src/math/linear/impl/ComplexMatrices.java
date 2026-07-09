@@ -9,6 +9,11 @@ public class ComplexMatrices  implements IMatrix
     
     public ComplexMatrices(int row, int col)
     {
+        if (row <= 0 || col <= 0) 
+        {
+                throw new IllegalArgumentException("Rows and columns must be greater than zero."); 
+        }
+
         this.elements = new ComplexNumber[row][col];
         
         for(int i = 0; i < row; i++)
@@ -287,8 +292,8 @@ public class ComplexMatrices  implements IMatrix
         int cols = this.elements[0].length;
 
             if (rows != cols)
-            {
-                throw new IllegalArgumentException("O traço só pode ser calculado para matrizes quadradas.");
+            {                                         
+                throw new IllegalArgumentException("the trace can only be calculated for square matrices.");
             }
 
         ComplexNumber sum = new ComplexNumber(0, 0);

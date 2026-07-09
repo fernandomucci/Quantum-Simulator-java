@@ -369,7 +369,7 @@ public class ComplexCalculator
                     ComplexMatrices vecMat1 = readVectorAsMatrix(sc, "Vector 1");
                     ComplexMatrices vecMat2 = readVectorAsMatrix(sc, "Vector 2");
                     System.out.println("\n--- RESULT ---");
-                    System.out.println("Vector Inner Product: " + InnerProduct.innerProdutcValue(vecMat1, vecMat2));
+                    System.out.println("Vector Inner Product: " + InnerProduct.innerProductValue(vecMat1, vecMat2));
                     break;
                 case 5:
                     ComplexMatrices vecMat = readVectorAsMatrix(sc, "Vector");
@@ -480,7 +480,7 @@ public class ComplexCalculator
     {
         System.out.println("\n=========== MATRIX MENU ===========");
         System.out.println("[1] Matrix Addition");
-        System.out.println("[2] Matrix Addition");
+        System.out.println("[2] Matrix Subtraction");
         System.out.println("[3] Additive Inverse");
         System.out.println("[4] Scalar Multiplication");
         System.out.println("[5] Matrix Multiplication");
@@ -490,6 +490,7 @@ public class ComplexCalculator
         System.out.println("[9] Trace (Diagonal Sum)");
         System.out.println("[10] Matrix Inner Product");
         System.out.println("[11] Matrix Norm");
+        System.out.println("[12] Matrix Distance");
         System.out.println("[0] Back");
         System.out.println("===================================");
         System.out.print("Choose an option: ");
@@ -566,13 +567,20 @@ public class ComplexCalculator
                     ComplexMatrices mat1 = readMatrix(sc, "Matrix 1");
                     ComplexMatrices mat2 = readMatrix(sc, "Matrix 2");
                     System.out.println("\n--- RESULT ---");
-                    System.out.println("Matrix Inner Product <1, 2>: " + InnerProduct.innerProdutcValue(mat1, mat2));
+                    System.out.println("Matrix Inner Product <1, 2>: " + InnerProduct.innerProductValue(mat1, mat2));
                     break;
                 case 11:
                     ComplexMatrices matNorm = readMatrix(sc, "Matrix");
                     System.out.println("\n--- RESULT ---");
                     System.out.println("Matrix Norm: " + InnerProduct.normValue(matNorm));
                     break;
+                case 12:
+                    ComplexMatrices matx1 = readMatrix(sc, "Matrix 1");
+                    ComplexMatrices matx2 = readMatrix(sc, "Matrix 2");
+                    System.out.println("\n--- RESULT ---");
+                    System.out.println("Matrix distance <1, 2>: " + InnerProduct.distance(matx1, matx2));
+                    break;
+
                 default:
                     System.out.println("Choose a valid menu option.");
             }
