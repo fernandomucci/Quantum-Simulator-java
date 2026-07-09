@@ -369,7 +369,7 @@ public class ComplexCalculator
                     ComplexMatrices vecMat1 = readVectorAsMatrix(sc, "Vector 1");
                     ComplexMatrices vecMat2 = readVectorAsMatrix(sc, "Vector 2");
                     System.out.println("\n--- RESULT ---");
-                    System.out.println("Vector Inner Product: " + InnerProduct.innerPeodutcValue(vecMat1, vecMat2));
+                    System.out.println("Vector Inner Product: " + InnerProduct.innerProdutcValue(vecMat1, vecMat2));
                     break;
                 case 5:
                     ComplexMatrices vecMat = readVectorAsMatrix(sc, "Vector");
