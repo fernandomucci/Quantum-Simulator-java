@@ -4,6 +4,7 @@ import java.util.Scanner;
 import math.core.*;
 import math.linear.impl.*;
 import math.linear.interfaces.IInnerProduct;
+// HermitianMatrices already comes from the math.linear.impl.* wildcard import above
 
 /**
  * Main driver class for the Complex Calculator.
@@ -14,6 +15,7 @@ public class ComplexCalculator
 {
   
     private static final IInnerProduct innerProduct = new InnerProduct();
+    private static final HermitianMatrices hermitianChecker = new HermitianMatrices();
 
     public static void main(String[] args)
     {
@@ -519,6 +521,7 @@ public class ComplexCalculator
         System.out.println("[13] Check Orthogonality");
         System.out.println("[14] Check Orthonormality");
         System.out.println("[15] Angle Between Matrices");
+        System.out.println("[16] Check if Matrix is Hermitian");
         System.out.println("[0] Back");
         System.out.println("===================================");
         System.out.print("Choose an option: ");
@@ -625,6 +628,11 @@ public class ComplexCalculator
                     ComplexMatrices angleM2 = readMatrix(sc, "Matrix 2");
                     System.out.println("\n--- RESULT ---");
                     System.out.printf("Angle between matrices: %.2f degrees%n", innerProduct.angle(angleM1, angleM2));
+                    break;
+                case 16:
+                    ComplexMatrices hermM = readMatrix(sc, "Matrix");
+                    System.out.println("\n--- RESULT ---");
+                    System.out.println("Is Hermitian? " + hermitianChecker.isHermitian(hermM));
                     break;
 
                 default:
