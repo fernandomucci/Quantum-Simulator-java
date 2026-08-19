@@ -11,8 +11,21 @@ public class InnerProduct
             throw new IllegalArgumentException("the matrice cannot be null.");
         }
 
-        //Tr(A† * B)
-        ComplexNumber result = m1.dagger().matrixMultiplication(m2).trace();
+         // Tr(A† * B) == sum of conj(A[i][j]) * B[i][j] over every position.
+        // This avoids computing the full matrix product just to throw away
+        // everything except the diagonal.
+        ComplexNumber result = new ComplexNumber(0, 0);
+
+        for (int i = 0; i < m1.getRows(); i++)
+        {
+            for (int j = 0; j < m1.getCols(); j++)
+            {
+                ComplexNumber a = m1.getElement(i, j).conjugate();
+                ComplexNumber b = m2.getElement(i, j);
+                result = result.add(a.multiply(b));
+            }
+        }
+
 
         return result;
     }
