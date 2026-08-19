@@ -590,7 +590,7 @@ public class ComplexCalculator
                     System.out.println(m9.dagger());
                     break;
                 case 9:
-                    ComplexMatrices m10 = readMatrix(sc, "Matrix");
+                    ComplexMatrices m10 = readSquareMatrix(sc, "Matrix");
                     System.out.println("\n--- RESULT ---");
                     System.out.println("Trace: " + m10.trace());
                     break;
@@ -630,7 +630,7 @@ public class ComplexCalculator
                     System.out.printf("Angle between matrices: %.2f degrees%n", innerProduct.angle(angleM1, angleM2));
                     break;
                 case 16:
-                    ComplexMatrices hermM = readMatrix(sc, "Matrix");
+                    ComplexMatrices hermM = readSquareMatrix(sc, "Matrix");
                     System.out.println("\n--- RESULT ---");
                     System.out.println("Is Hermitian? " + hermitianChecker.isHermitian(hermM));
                     break;
@@ -683,6 +683,55 @@ public class ComplexCalculator
                         break;
                     } 
                     catch (IllegalArgumentException e) 
+                    {
+                        System.out.println("Invalid format. Try again.");
+                    }
+                }
+            }
+        }
+        return mat;
+    }
+
+    /**
+     * Reads a square matrix (n x n). Used for operations that only make
+     * sense for square matrices, like Trace and Hermitian check, so the
+     * user isn't asked to fill in elements only to fail validation afterward.
+     */
+    public static ComplexMatrices readSquareMatrix(Scanner sc, String name)
+    {
+        int size = 0;
+        while (true)
+        {
+            try
+            {
+                System.out.print("\nEnter the size (n) of the square " + name + " (n x n): ");
+                size = Integer.parseInt(sc.nextLine().trim());
+                if (size > 0) break;
+                System.out.println("Size must be greater than zero.");
+            }
+            catch (NumberFormatException e)
+            {
+                System.out.println("Invalid input. Please enter a valid integer.");
+            }
+        }
+
+        ComplexMatrices mat = new ComplexMatrices(size, size);
+
+        System.out.println("Entering elements for " + name + "...");
+        for (int i = 0; i < size; i++)
+        {
+            for (int j = 0; j < size; j++)
+            {
+                while (true)
+                {
+                    try
+                    {
+                        System.out.print("Element [" + i + "][" + j + "] (e.g., 2+3i): ");
+                        String input = sc.nextLine().replace(" ", "");
+                        mat.setElement(i, j, parseComplex(input));
+                        break;
+                    }
+                    catch (IllegalArgumentException e)
                     {
                         System.out.println("Invalid format. Try again.");
                     }
