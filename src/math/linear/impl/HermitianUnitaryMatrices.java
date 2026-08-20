@@ -1,7 +1,7 @@
 package math.linear.impl;
 import math.core.ComplexNumber;
 
-public class HermitianMatrices
+public class HermitianUnitaryMatrices
 {
     public boolean isHermitian(ComplexMatrices m1)
     {
@@ -35,6 +35,45 @@ public class HermitianMatrices
             }
 
         }
+
+        return true;
+    }
+
+    public boolean IsUnitary(ComplexMatrices m1)
+    {
+        if(m1 == null)
+        {
+            throw new IllegalArgumentException("the matrices cannot be null");
+        }
+
+        int col = m1.getCols();
+        int row = m1.getRows();
+
+
+        if(col != row)
+        {
+            return false;
+        }
+
+        ComplexMatrices product = m1.dagger().matrixMultiplication(m1);
+        double tolerance = 1e-9;
+
+        for(int i = 0; i < row; i++)
+        {
+            for(int j = 0; j < col; j++)
+            {
+                ComplexNumber element = product.getElement(i, j);
+                double expectedReal = (i == j) ? 1.0 : 0.0;
+
+                if (Math.abs(element.getReal() - expectedReal) > tolerance
+                    || Math.abs(element.getImag()) > tolerance)
+                {
+                    return false;
+                }
+            }
+        }
+
+        
 
         return true;
     }
