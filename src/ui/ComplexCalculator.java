@@ -4,6 +4,7 @@ import java.util.Scanner;
 import math.core.*;
 import math.linear.impl.*;
 import math.linear.interfaces.IInnerProduct;
+// HermitianMatrices already comes from the math.linear.impl.* wildcard import above
 
 /**
  * Main driver class for the Complex Calculator.
@@ -14,6 +15,8 @@ public class ComplexCalculator
 {
   
     private static final IInnerProduct innerProduct = new InnerProduct();
+    private static final HermitianUnitaryMatrices hermitianChecker = new HermitianUnitaryMatrices();
+    private static final HermitianUnitaryMatrices unitaryChecker = new HermitianUnitaryMatrices();
 
     public static void main(String[] args)
     {
@@ -519,6 +522,8 @@ public class ComplexCalculator
         System.out.println("[13] Check Orthogonality");
         System.out.println("[14] Check Orthonormality");
         System.out.println("[15] Angle Between Matrices");
+        System.out.println("[16] Check if Matrix is Hermitian");
+        System.out.println("[17] Check if Matrix is Unitary");
         System.out.println("[0] Back");
         System.out.println("===================================");
         System.out.print("Choose an option: ");
@@ -587,7 +592,7 @@ public class ComplexCalculator
                     System.out.println(m9.dagger());
                     break;
                 case 9:
-                    ComplexMatrices m10 = readMatrix(sc, "Matrix");
+                    ComplexMatrices m10 = readSquareMatrix(sc, "Matrix");
                     System.out.println("\n--- RESULT ---");
                     System.out.println("Trace: " + m10.trace());
                     break;
@@ -626,6 +631,17 @@ public class ComplexCalculator
                     System.out.println("\n--- RESULT ---");
                     System.out.printf("Angle between matrices: %.2f degrees%n", innerProduct.angle(angleM1, angleM2));
                     break;
+                case 16:
+                    ComplexMatrices hermM = readSquareMatrix(sc, "Matrix");
+                    System.out.println("\n--- RESULT ---");
+                    System.out.println("Is Hermitian? " + hermitianChecker.isHermitian(hermM));
+                    break;
+                case 17:
+                    ComplexMatrices uniM = readSquareMatrix(sc, "Matrix");
+                    System.out.println("\n--- RESULT ---");
+                    System.out.println("Is Unitaty? " + unitaryChecker.IsUnitary(uniM));
+                    break;
+
 
                 default:
                     System.out.println("Choose a valid menu option.");
@@ -675,6 +691,55 @@ public class ComplexCalculator
                         break;
                     } 
                     catch (IllegalArgumentException e) 
+                    {
+                        System.out.println("Invalid format. Try again.");
+                    }
+                }
+            }
+        }
+        return mat;
+    }
+
+    /**
+     * Reads a square matrix (n x n). Used for operations that only make
+     * sense for square matrices, like Trace and Hermitian check, so the
+     * user isn't asked to fill in elements only to fail validation afterward.
+     */
+    public static ComplexMatrices readSquareMatrix(Scanner sc, String name)
+    {
+        int size = 0;
+        while (true)
+        {
+            try
+            {
+                System.out.print("\nEnter the size (n) of the square " + name + " (n x n): ");
+                size = Integer.parseInt(sc.nextLine().trim());
+                if (size > 0) break;
+                System.out.println("Size must be greater than zero.");
+            }
+            catch (NumberFormatException e)
+            {
+                System.out.println("Invalid input. Please enter a valid integer.");
+            }
+        }
+
+        ComplexMatrices mat = new ComplexMatrices(size, size);
+
+        System.out.println("Entering elements for " + name + "...");
+        for (int i = 0; i < size; i++)
+        {
+            for (int j = 0; j < size; j++)
+            {
+                while (true)
+                {
+                    try
+                    {
+                        System.out.print("Element [" + i + "][" + j + "] (e.g., 2+3i): ");
+                        String input = sc.nextLine().replace(" ", "");
+                        mat.setElement(i, j, parseComplex(input));
+                        break;
+                    }
+                    catch (IllegalArgumentException e)
                     {
                         System.out.println("Invalid format. Try again.");
                     }
