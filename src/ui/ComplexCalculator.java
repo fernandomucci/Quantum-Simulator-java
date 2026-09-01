@@ -17,6 +17,7 @@ public class ComplexCalculator
     private static final IInnerProduct innerProduct = new InnerProduct();
     private static final HermitianUnitaryMatrices hermitianChecker = new HermitianUnitaryMatrices();
     private static final HermitianUnitaryMatrices unitaryChecker = new HermitianUnitaryMatrices();
+    private static final tensorProduct matrixTensor = new tensorProduct();
 
     public static void main(String[] args)
     {
@@ -524,6 +525,7 @@ public class ComplexCalculator
         System.out.println("[15] Angle Between Matrices");
         System.out.println("[16] Check if Matrix is Hermitian");
         System.out.println("[17] Check if Matrix is Unitary");
+        System.out.println("[18] Tensor Product");
         System.out.println("[0] Back");
         System.out.println("===================================");
         System.out.print("Choose an option: ");
@@ -641,7 +643,12 @@ public class ComplexCalculator
                     System.out.println("\n--- RESULT ---");
                     System.out.println("Is Unitaty? " + unitaryChecker.IsUnitary(uniM));
                     break;
-
+                case 18:
+                    ComplexMatrices mTensor1 = readMatrix(sc, "Matrix 1");
+                    ComplexMatrices mTensor2 = readMatrix(sc, "Matrix 2");
+                    System.out.println("\n--- RESULT ---");
+                    System.out.println("The tensor product is: " + matrixTensor.tensorProductCalc(mTensor1, mTensor2));
+                    break;
 
                 default:
                     System.out.println("Choose a valid menu option.");

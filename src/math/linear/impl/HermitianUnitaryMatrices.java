@@ -56,6 +56,8 @@ public class HermitianUnitaryMatrices
         }
 
         ComplexMatrices product = m1.dagger().matrixMultiplication(m1);
+
+        // Small tolerance to safely compare doubles (avoids floating point errors)
         double tolerance = 1e-9;
 
         for(int i = 0; i < row; i++)
