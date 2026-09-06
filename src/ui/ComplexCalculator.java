@@ -17,7 +17,8 @@ public class ComplexCalculator
     private static final IInnerProduct innerProduct = new InnerProduct();
     private static final HermitianUnitaryMatrices hermitianChecker = new HermitianUnitaryMatrices();
     private static final HermitianUnitaryMatrices unitaryChecker = new HermitianUnitaryMatrices();
-    private static final tensorProduct matrixTensor = new tensorProduct();
+    private static final TensorProduct matrixTensor = new TensorProduct();
+    private static final Deterministic deterministicSystem = new Deterministic();
 
     public static void main(String[] args)
     {
@@ -78,6 +79,7 @@ public class ComplexCalculator
         System.out.println("[2] Subtraction");
         System.out.println("[3] Multiplication");
         System.out.println("[4] Division");
+        System.out.println("[5] Deterministic System");
         System.out.println("[0] Back");
         System.out.println("=================================");
         System.out.print("Choose an option: ");
@@ -94,6 +96,15 @@ public class ComplexCalculator
         }
 
         if (choice == 0) return;
+
+        // Deterministic system takes a matrix and a state vector, not two
+        // complex numbers, so it's handled separately before the shared
+        // complex-number input below.
+        if (choice == 5)
+        {
+            deterministicSystemMenu(sc);
+            return;
+        }
 
         try 
         {
@@ -126,6 +137,69 @@ public class ComplexCalculator
         {
             System.out.println("Error: " + e.getMessage());
         }
+    }
+
+    /**
+     * Runs a deterministic system simulation (the "marble experiment"):
+     * the user provides a transition matrix describing how the system
+     * moves between vertices/states, an initial state vector, and a
+     * number of time steps. The program then applies the transition
+     * matrix that many times and shows the resulting state.
+     */
+    public static void deterministicSystemMenu(Scanner sc)
+    {
+        System.out.println("\n===== DETERMINISTIC SYSTEM =====");
+
+        try
+        {
+            ComplexMatrices transitionMatrix = readSquareMatrix(sc, "Transition Matrix");
+            int size = transitionMatrix.getRows();
+
+            System.out.println("Now enter the initial state (size must match the matrix: " + size + ").");
+            ComplexMatrices initialState = readVectorAsMatrix(sc, "Initial State");
+
+            if (initialState.getRows() != size)
+            {
+                System.out.println("Error: state vector size (" + initialState.getRows() +
+                    ") must match the matrix size (" + size + ").");
+                return;
+            }
+
+            int timeStep = readNonNegativeInt(sc, "Enter the number of time steps: ");
+
+            ComplexMatrices finalState = deterministicSystem.multipleStepDynamics(transitionMatrix, timeStep, initialState);
+
+            System.out.println("\n--- RESULT ---");
+            System.out.println("State after " + timeStep + " time step(s):");
+            System.out.println(finalState);
+        }
+        catch (IllegalArgumentException e)
+        {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Repeatedly prompts until the user enters a non-negative integer.
+     */
+    private static int readNonNegativeInt(Scanner sc, String prompt)
+    {
+        int value = 0;
+        while (true)
+        {
+            try
+            {
+                System.out.print(prompt);
+                value = Integer.parseInt(sc.nextLine().trim());
+                if (value >= 0) break;
+                System.out.println("Value cannot be negative.");
+            }
+            catch (NumberFormatException e)
+            {
+                System.out.println("Invalid input. Please enter a valid integer.");
+            }
+        }
+        return value;
     }
 
     public static void unaryMenu(Scanner sc)
@@ -709,8 +783,10 @@ public class ComplexCalculator
 
     /**
      * Reads a square matrix (n x n). Used for operations that only make
-     * sense for square matrices, like Trace and Hermitian check, so the
-     * user isn't asked to fill in elements only to fail validation afterward.
+     * sense for square matrices, like Trace, Hermitian check, Unitary
+     * check, and the Deterministic System's transition matrix, so the
+     * user isn't asked to fill in elements only to fail validation
+     * afterward.
      */
     public static ComplexMatrices readSquareMatrix(Scanner sc, String name)
     {
