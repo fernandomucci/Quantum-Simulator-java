@@ -306,6 +306,24 @@ public class ComplexMatrices  implements IMatrix
         return sum;
     }
 
+     /**
+     * Creates an n x n identity matrix. This is a static factory method —
+     * it doesn't belong to the IMatrix interface contract, since creating
+     * an identity matrix doesn't depend on any existing matrix instance.
+     */
+    public static ComplexMatrices createIdentity(int size)
+    {
+        ComplexMatrices identity = new ComplexMatrices(size, size);
+    
+        // As the rest is already zero by default, only fill the main diagonal
+        for (int i = 0; i < size; i++)
+        {
+            identity.setElement(i, i, new ComplexNumber(1, 0));
+        }
+    
+        return identity;
+    }
+
     //FORMAT
     @Override
     public String toString()
