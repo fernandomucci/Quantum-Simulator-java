@@ -17,8 +17,9 @@ public class ComplexCalculator
     private static final IInnerProduct innerProduct = new InnerProduct();
     private static final HermitianUnitaryMatrices hermitianChecker = new HermitianUnitaryMatrices();
     private static final HermitianUnitaryMatrices unitaryChecker = new HermitianUnitaryMatrices();
-    private static final TensorProduct matrixTensor = new TensorProduct();
+    private static final tensorProduct matrixTensor = new tensorProduct();
     private static final Deterministic deterministicSystem = new Deterministic();
+    private static final Probabilistic probabilisticSystem = new Probabilistic();
 
     public static void main(String[] args)
     {
@@ -80,6 +81,7 @@ public class ComplexCalculator
         System.out.println("[3] Multiplication");
         System.out.println("[4] Division");
         System.out.println("[5] Deterministic System");
+        System.out.println("[6] Probabilistic System");
         System.out.println("[0] Back");
         System.out.println("=================================");
         System.out.print("Choose an option: ");
@@ -97,12 +99,18 @@ public class ComplexCalculator
 
         if (choice == 0) return;
 
-        // Deterministic system takes a matrix and a state vector, not two
-        // complex numbers, so it's handled separately before the shared
-        // complex-number input below.
+        // Deterministic and Probabilistic systems take a matrix and a
+        // state vector, not two complex numbers, so they're handled
+        // separately before the shared complex-number input below.
         if (choice == 5)
         {
             deterministicSystemMenu(sc);
+            return;
+        }
+
+        if (choice == 6)
+        {
+            probabilisticSystemMenu(sc);
             return;
         }
 
@@ -180,6 +188,52 @@ public class ComplexCalculator
     }
 
     /**
+     * Runs a probabilistic system simulation: the user provides a
+     * transition matrix of probabilities (each column must sum to 1) and
+     * an initial probability distribution as the state vector. The matrix
+     * is validated as stochastic before anything is computed, then applied
+     * to the state for the chosen number of time steps.
+     */
+    public static void probabilisticSystemMenu(Scanner sc)
+    {
+        System.out.println("\n===== PROBABILISTIC SYSTEM =====");
+
+        try
+        {
+            ComplexMatrices transitionMatrix = readProbabilityMatrix(sc, "Transition Matrix");
+
+            if (!probabilisticSystem.isStochastic(transitionMatrix))
+            {
+                System.out.println("Error: this matrix is not stochastic — every column must sum to 1.");
+                return;
+            }
+
+            int size = transitionMatrix.getRows();
+
+            System.out.println("Now enter the initial state (size must match the matrix: " + size + ").");
+            ComplexMatrices initialState = readProbabilityVector(sc, "Initial State", size);
+
+            if (!probabilisticSystem.isStochastic(initialState))
+            {
+                System.out.println("Error: the initial state must be a valid probability distribution (must sum to 1).");
+                return;
+            }
+
+            int timeStep = readNonNegativeInt(sc, "Enter the number of time steps: ");
+
+            ComplexMatrices finalState = probabilisticSystem.multipleStepDynamics(transitionMatrix, timeStep, initialState);
+
+            System.out.println("\n--- RESULT ---");
+            System.out.println("Probability distribution after " + timeStep + " time step(s):");
+            System.out.println(finalState);
+        }
+        catch (IllegalArgumentException e)
+        {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    /**
      * Repeatedly prompts until the user enters a non-negative integer.
      */
     private static int readNonNegativeInt(Scanner sc, String prompt)
@@ -200,6 +254,117 @@ public class ComplexCalculator
             }
         }
         return value;
+    }
+
+    /**
+     * Repeatedly prompts until the user enters a valid probability
+     * (a real number between 0 and 1, inclusive). Accepts either a
+     * decimal (e.g. "0.5") or a fraction (e.g. "1/3") — fractions are
+     * converted to their decimal value immediately; the result is
+     * always displayed as a decimal afterward.
+     */
+    private static double readProbability(Scanner sc, String prompt)
+    {
+        double value;
+        while (true)
+        {
+            try
+            {
+                System.out.print(prompt);
+                String input = sc.nextLine().trim();
+
+                if (input.contains("/"))
+                {
+                    String[] parts = input.split("/");
+                    if (parts.length != 2)
+                    {
+                        throw new NumberFormatException("Invalid fraction format.");
+                    }
+
+                    double numerator = Double.parseDouble(parts[0].trim());
+                    double denominator = Double.parseDouble(parts[1].trim());
+
+                    if (denominator == 0)
+                    {
+                        throw new NumberFormatException("Denominator cannot be zero.");
+                    }
+
+                    value = numerator / denominator;
+                }
+                else
+                {
+                    value = Double.parseDouble(input);
+                }
+
+                if (value >= 0.0 && value <= 1.0)
+                {
+                    break;
+                }
+
+                System.out.println("Value must be between 0 and 1 (it's a probability).");
+            }
+            catch (NumberFormatException e)
+            {
+                System.out.println("Invalid input. Please enter a decimal (e.g. 0.5) or a fraction (e.g. 1/3).");
+            }
+        }
+        return value;
+    }
+
+    /**
+     * Reads a square matrix whose entries are probabilities (0 to 1),
+     * used as the transition matrix of a probabilistic system. Each
+     * entry is validated individually as it's typed in; whether the
+     * matrix as a whole is stochastic (columns summing to 1) is checked
+     * afterward by the caller via Probabilistic.isStochastic.
+     */
+    private static ComplexMatrices readProbabilityMatrix(Scanner sc, String name)
+    {
+        int size = 0;
+        while (true)
+        {
+            try
+            {
+                System.out.print("\nEnter the size (n) of the square " + name + " (n x n): ");
+                size = Integer.parseInt(sc.nextLine().trim());
+                if (size > 0) break;
+                System.out.println("Size must be greater than zero.");
+            }
+            catch (NumberFormatException e)
+            {
+                System.out.println("Invalid input. Please enter a valid integer.");
+            }
+        }
+
+        ComplexMatrices mat = new ComplexMatrices(size, size);
+
+        System.out.println("Entering probabilities for " + name + "...");
+        for (int i = 0; i < size; i++)
+        {
+            for (int j = 0; j < size; j++)
+            {
+                double value = readProbability(sc, "Element [" + i + "][" + j + "] (0 to 1): ");
+                mat.setElement(i, j, new ComplexNumber(value, 0));
+            }
+        }
+        return mat;
+    }
+
+    /**
+     * Reads a column vector (expectedSize x 1) whose entries are
+     * probabilities, used as the state of a probabilistic system.
+     */
+    private static ComplexMatrices readProbabilityVector(Scanner sc, String name, int expectedSize)
+    {
+        ComplexMatrices mat = new ComplexMatrices(expectedSize, 1);
+
+        System.out.println("Entering probabilities for " + name + "...");
+        for (int i = 0; i < expectedSize; i++)
+        {
+            double value = readProbability(sc, "Element [" + i + "] (0 to 1): ");
+            mat.setElement(i, 0, new ComplexNumber(value, 0));
+        }
+        return mat;
     }
 
     public static void unaryMenu(Scanner sc)
@@ -600,6 +765,7 @@ public class ComplexCalculator
         System.out.println("[16] Check if Matrix is Hermitian");
         System.out.println("[17] Check if Matrix is Unitary");
         System.out.println("[18] Tensor Product");
+        System.out.println("[19] Check if Matrix is Stochastic");
         System.out.println("[0] Back");
         System.out.println("===================================");
         System.out.print("Choose an option: ");
@@ -722,6 +888,11 @@ public class ComplexCalculator
                     ComplexMatrices mTensor2 = readMatrix(sc, "Matrix 2");
                     System.out.println("\n--- RESULT ---");
                     System.out.println("The tensor product is: " + matrixTensor.tensorProductCalc(mTensor1, mTensor2));
+                    break;
+                case 19:
+                    ComplexMatrices stochM = readProbabilityMatrix(sc, "Matrix");
+                    System.out.println("\n--- RESULT ---");
+                    System.out.println("Is Stochastic? " + probabilisticSystem.isStochastic(stochM));
                     break;
 
                 default:
