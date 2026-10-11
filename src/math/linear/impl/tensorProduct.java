@@ -1,7 +1,7 @@
 package math.linear.impl;
 import math.core.ComplexNumber;
 
-public class TensorProduct
+public class tensorProduct
 {
     public ComplexMatrices tensorProductCalc(ComplexMatrices m1, ComplexMatrices m2)
     {
