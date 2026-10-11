@@ -20,6 +20,7 @@ public class ComplexCalculator
     private static final tensorProduct matrixTensor = new tensorProduct();
     private static final Deterministic deterministicSystem = new Deterministic();
     private static final Probabilistic probabilisticSystem = new Probabilistic();
+    private static final SlitsExperiment slitsExperiment = new SlitsExperiment();
 
     public static void main(String[] args)
     {
@@ -82,6 +83,7 @@ public class ComplexCalculator
         System.out.println("[4] Division");
         System.out.println("[5] Deterministic System");
         System.out.println("[6] Probabilistic System");
+        System.out.println("[7] Multi-Slit Experiment");
         System.out.println("[0] Back");
         System.out.println("=================================");
         System.out.print("Choose an option: ");
@@ -111,6 +113,12 @@ public class ComplexCalculator
         if (choice == 6)
         {
             probabilisticSystemMenu(sc);
+            return;
+        }
+
+        if (choice == 7)
+        {
+            multiSlitExperimentMenu(sc);
             return;
         }
 
@@ -231,6 +239,94 @@ public class ComplexCalculator
         {
             System.out.println("Error: " + e.getMessage());
         }
+    }
+
+    /**
+     * Runs the generalized multi-slit experiment (Programming Drill 3.2.2):
+     * the user chooses the number of slits and targets, enters the
+     * probability of each slit sending a bullet to each target, and the
+     * program builds the full transition matrix (gun -> slits -> targets),
+     * squares it, and shows both the squared matrix and the resulting
+     * state vector after two time clicks.
+     */
+    public static void multiSlitExperimentMenu(Scanner sc)
+    {
+        System.out.println("\n===== MULTI-SLIT EXPERIMENT =====");
+
+        try
+        {
+            int numSlits = readPositiveInt(sc, "Enter the number of slits: ");
+            int numTargets = readPositiveInt(sc, "Enter the number of targets: ");
+
+            System.out.println("Now enter the probability of each slit sending a bullet to each target.");
+            ComplexMatrices slitToTargetProbabilities = readRectangularProbabilityMatrix(sc, numTargets, numSlits);
+
+            if (!probabilisticSystem.isStochastic(slitToTargetProbabilities))
+            {
+                System.out.println("Error: for each slit, the probabilities to all targets must sum to 1.");
+                return;
+            }
+
+            ComplexMatrices transitionMatrix = slitsExperiment.buildTransitionMatrix(numSlits, numTargets, slitToTargetProbabilities);
+            ComplexMatrices squaredMatrix = transitionMatrix.matrixMultiplication(transitionMatrix);
+
+            int size = transitionMatrix.getRows();
+            ComplexMatrices initialState = slitsExperiment.createInitialState(size);
+            ComplexMatrices finalState = squaredMatrix.matrixMultiplication(initialState);
+
+            System.out.println("\n--- RESULT ---");
+            System.out.println("Transition matrix squared (after two time clicks):");
+            System.out.println(squaredMatrix);
+            System.out.println("Resulting state vector (bullet starts at the gun):");
+            System.out.println(finalState);
+        }
+        catch (IllegalArgumentException e)
+        {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Repeatedly prompts until the user enters a positive integer (> 0).
+     */
+    private static int readPositiveInt(Scanner sc, String prompt)
+    {
+        int value;
+        while (true)
+        {
+            try
+            {
+                System.out.print(prompt);
+                value = Integer.parseInt(sc.nextLine().trim());
+                if (value > 0) break;
+                System.out.println("Value must be greater than zero.");
+            }
+            catch (NumberFormatException e)
+            {
+                System.out.println("Invalid input. Please enter a valid integer.");
+            }
+        }
+        return value;
+    }
+
+    /**
+     * Reads a (rows x cols) matrix whose entries are probabilities (0 to 1),
+     * used for the slit-to-target probability matrix, which is generally
+     * NOT square (number of slits usually differs from number of targets).
+     */
+    private static ComplexMatrices readRectangularProbabilityMatrix(Scanner sc, int rows, int cols)
+    {
+        ComplexMatrices mat = new ComplexMatrices(rows, cols);
+
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < cols; j++)
+            {
+                double value = readProbability(sc, "Target [" + i + "] from Slit [" + j + "] (0 to 1): ");
+                mat.setElement(i, j, new ComplexNumber(value, 0));
+            }
+        }
+        return mat;
     }
 
     /**
