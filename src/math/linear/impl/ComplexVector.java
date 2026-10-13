@@ -18,6 +18,7 @@ public class ComplexVector implements IVector
     }
         
     // Method to set a complex number at a specific position
+    @Override
     public void setElement(int index, ComplexNumber number)
     {
         if (index < 0 || index >= this.elements.length)
@@ -28,6 +29,7 @@ public class ComplexVector implements IVector
     }
 
     // Method to get a number from a specific position
+    @Override 
     public ComplexNumber getElement(int index)
     {
         if (index < 0 || index >= this.elements.length)
@@ -40,6 +42,7 @@ public class ComplexVector implements IVector
 
 
     //Method to add two complex vectors
+    @Override
     public ComplexVector add(ComplexVector other)
     {
        //Math rule: Vectors must be the same size to be added
@@ -70,6 +73,7 @@ public class ComplexVector implements IVector
     }
 
     // Method to calculate the additive inverse of the vector
+    @Override
     public ComplexVector inverse()
     {
         int size = this.elements.length;
@@ -96,7 +100,7 @@ public class ComplexVector implements IVector
     }
 
 
-
+    @Override
     public ComplexVector scalarMultiply(ComplexNumber scalarNumber)
     {
         int size = this.elements.length;
@@ -125,7 +129,7 @@ public class ComplexVector implements IVector
     {
         StringBuilder sb = new StringBuilder();
         sb.append("[\n");
-        for (int i = 0; i < this.elements.length; i++)
+        for(int i = 0; i < this.elements.length; i++)
         {
             sb.append("  ").append(this.elements[i].toString()).append("\n");
         }
