@@ -12,9 +12,17 @@ import ui.menu.VectorMenu;
  * (see the ui.menu package). Reading and parsing of user input lives
  * in the ui.input package.
  */
-
 public class ComplexCalculator
 {
+  
+    private static final IInnerProduct innerProduct = new InnerProduct();
+    private static final HermitianUnitaryMatrices hermitianChecker = new HermitianUnitaryMatrices();
+    private static final HermitianUnitaryMatrices unitaryChecker = new HermitianUnitaryMatrices();
+    private static final tensorProduct matrixTensor = new tensorProduct();
+    private static final Deterministic deterministicSystem = new Deterministic();
+    private static final Probabilistic probabilisticSystem = new Probabilistic();
+    private static final SlitsExperiment slitsExperiment = new SlitsExperiment();
+
     public static void main(String[] args)
     {
         Scanner sc = new Scanner(System.in);

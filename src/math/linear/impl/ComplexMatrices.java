@@ -9,6 +9,11 @@ public class ComplexMatrices  implements IMatrix
     
     public ComplexMatrices(int row, int col)
     {
+        if (row <= 0 || col <= 0) 
+        {
+                throw new IllegalArgumentException("Rows and columns must be greater than zero."); 
+        }
+
         this.elements = new ComplexNumber[row][col];
         
         for(int i = 0; i < row; i++)
@@ -22,18 +27,21 @@ public class ComplexMatrices  implements IMatrix
     }
 
     //method to get the number of rows
+    @Override
     public int getRows()
     {
         return this.elements.length;
     }
 
-    //method to get the number os cols
+    //method to get the number of cols
+    @Override
     public int getCols()
     {
         return this.elements[0].length;
     }
 
     // Method to set a complex number at a specific position
+    @Override
     public void setElement(int row, int col, ComplexNumber number)
     {
         if (row < 0 || row >= this.elements.length || col < 0 || col >= this.elements[0].length)
@@ -44,6 +52,7 @@ public class ComplexMatrices  implements IMatrix
     }
 
     // Method to get a number from a specific position
+    @Override
     public ComplexNumber getElement(int row, int col)
     {
         if (row < 0 || row >= this.elements.length || col < 0 || col >= this.elements[0].length)
@@ -54,6 +63,7 @@ public class ComplexMatrices  implements IMatrix
     }
 
     //Method to add two matrices
+    @Override
     public ComplexMatrices add(ComplexMatrices other)
     {
         // Math rule: Matrices must be the same size to be added (Rows AND Columns)
@@ -86,7 +96,43 @@ public class ComplexMatrices  implements IMatrix
         return result;
     }
 
+
+    //Method to subtract two matrices
+    public ComplexMatrices subtract(ComplexMatrices other)
+    {
+         // Math rule: Matrices must be the same size to be added (Rows AND Columns)
+        if(this.elements.length != other.elements.length || this.elements[0].length != other.elements[0].length)
+        {
+             throw new IllegalArgumentException("Matrices must have the same size (rows and columns) to be added.");
+        }
+
+         //Create a new Matrice to store the result
+        int row = this.elements.length;
+        int col = this.elements[0].length;
+        ComplexMatrices result = new ComplexMatrices(row, col);
+
+        
+        for(int i = 0; i < row; i++)
+        {
+            for(int j = 0; j < col; j++)
+            {
+                //get the number from both matrice
+                ComplexNumber num1 = this.elements[i][j];
+                ComplexNumber num2 = other.getElement(i, j);
+
+                //already created in ComplexNumber
+                ComplexNumber sum = num1.subtract(num2);
+
+                //put the result in the new matrice
+                result.setElement(i, j, sum);
+            }
+        }
+
+        return result;
+    }
+
     //Method to calculate the additive inverse of the vector
+    @Override
     public ComplexMatrices inverse()
     {
         //creat a new matrice to store the result
@@ -117,6 +163,7 @@ public class ComplexMatrices  implements IMatrix
     }
 
     //Method to multiply by scalar
+    @Override
     public ComplexMatrices scalarMultiply(ComplexNumber scalaNumber)
     {
         //creat a new matrice to store the result
@@ -143,6 +190,7 @@ public class ComplexMatrices  implements IMatrix
     }
 
    
+    @Override
     public ComplexMatrices matrixMultiplication(ComplexMatrices other)
     {
         // Retrieve dimensions for clarity and bound checking
@@ -190,8 +238,94 @@ public class ComplexMatrices  implements IMatrix
         return result;
     }
 
+    @Override
+    public ComplexMatrices transposeComplexMatrices()
+    {
+        int originalRows = this.elements.length;
+        int originalCols = this.elements[0].length;
+
+        ComplexMatrices transpose = new ComplexMatrices(originalCols, originalRows);
+
+        for(int i = 0; i < originalRows; i++)
+        {
+            for(int j = 0; j < originalCols; j++)
+            {
+                ComplexNumber number = this.elements[i][j];
+                transpose.setElement(j, i, number);
+            }
+        }
+
+        return transpose;
+
+    }
+
+    @Override
+    public ComplexMatrices conjugMatrices()
+    {
+        int rows = this.elements.length;
+        int cols = this.elements[0].length;
+        
+        ComplexMatrices result = new ComplexMatrices(rows, cols);
+
+        for(int i = 0; i < rows; i++)
+        {
+            for(int j = 0; j < cols; j++)
+            {
+                ComplexNumber numberConjugade = this.elements[i][j].conjugate();
+                result.setElement(i, j, numberConjugade);
+            }
+        }
+
+        return result;
+    }
+
+    @Override
+    public ComplexMatrices dagger()
+    {
+        return this.transposeComplexMatrices().conjugMatrices();
+    }
+
+    @Override
+    public ComplexNumber trace()
+    {
+        int rows = this.elements.length;
+        int cols = this.elements[0].length;
+
+            if (rows != cols)
+            {                                         
+                throw new IllegalArgumentException("the trace can only be calculated for square matrices.");
+            }
+
+        ComplexNumber sum = new ComplexNumber(0, 0);
+
+            for (int i = 0; i < rows; i++)
+            {
+                sum = sum.add(this.elements[i][i]);
+            }
+
+        return sum;
+    }
+
+     /**
+     * Creates an n x n identity matrix. This is a static factory method —
+     * it doesn't belong to the IMatrix interface contract, since creating
+     * an identity matrix doesn't depend on any existing matrix instance.
+     */
+    public static ComplexMatrices createIdentity(int size)
+    {
+        ComplexMatrices identity = new ComplexMatrices(size, size);
+    
+        // As the rest is already zero by default, only fill the main diagonal
+        for (int i = 0; i < size; i++)
+        {
+            identity.setElement(i, i, new ComplexNumber(1, 0));
+        }
+    
+        return identity;
+    }
 
     //FORMAT
+    @Override
     public String toString()
     {
         StringBuilder sb = new StringBuilder();

@@ -14,9 +14,9 @@ Custom parser for trigonometric inputs (e.g., pi/3).
 
 [x] Phase 2: Complex Vectors (State Vectors) - Object-oriented structure using composition to represent multiple quantum states (Qubits).
 
-[ ] Phase 3: Complex Matrices & Tensor Products - Next Step
+[x] Phase 3: Complex Matrices & Tensor Products
 
-[ ] Phase 4: Quantum Gates (Pauli, Hadamard, CNOT, etc.)
+[ ] Phase 4: Quantum Gates (Pauli, Hadamard, CNOT, etc.) - Next Step
 
 [ ] Phase 5: Simulating Quantum Algorithms
 

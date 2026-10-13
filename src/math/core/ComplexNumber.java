@@ -66,7 +66,7 @@ public class ComplexNumber
             throw new ArithmeticException("Division by zero in complex numbers.");
         }
         
-        double den = Math.pow(other.real, 2) + Math.pow(other.imag, 2);
+        double den = other.real * other.real + other.imag * other.imag;
 
         double newReal = (this.real * other.real + this.imag * other.imag) / den;
         double newImag = (this.imag * other.real - this.real * other.imag) / den;
@@ -76,7 +76,7 @@ public class ComplexNumber
 
     public double modulus()
     {
-        return Math.sqrt(Math.pow(this.real, 2) + Math.pow(this.imag, 2));
+        return Math.sqrt(this.real * this.real + this.imag * this.imag);
     }
 
     public ComplexNumber conjugate()
