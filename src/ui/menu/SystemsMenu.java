@@ -1,11 +1,14 @@
 package ui.menu;
  
 import java.util.Scanner;
+import math.linear.analysis.HermitianUnitaryMatrices;
 import math.linear.impl.ComplexMatrices;
 import math.systems.classical.Deterministic;
 import math.systems.probabilistic.Probabilistic;
 import math.systems.probabilistic.SlitsExperiment;
 import math.systems.quantum.QuantumSlitsExperiment;
+import math.systems.quantum.QuantumSystem;
+import math.linear.analysis.Probabilities;
 import static ui.input.InputReader.readNonNegativeInt;
 import static ui.input.InputReader.readPositiveInt;
 import static ui.input.InputReader.readProbabilityMatrix;
@@ -14,6 +17,7 @@ import static ui.input.InputReader.readRectangularComplexMatrix;
 import static ui.input.InputReader.readRectangularProbabilityMatrix;
 import static ui.input.InputReader.readSquareMatrix;
 import static ui.input.InputReader.readVectorAsMatrix;
+
 
 /**
  * Menus that run the system simulations: deterministic, probabilistic
@@ -26,6 +30,9 @@ public class SystemsMenu
     private static final Deterministic deterministicSystem = new Deterministic();
     private static final Probabilistic probabilisticSystem = new Probabilistic();
     private static final SlitsExperiment slitsExperiment = new SlitsExperiment();
+    private static final HermitianUnitaryMatrices unitaryChecker = new HermitianUnitaryMatrices();
+    private static final QuantumSystem quantumSystem = new QuantumSystem();
+    private static final Probabilities probabilities = new Probabilities();
 
     /**
      * Runs a deterministic system simulation (the "marble experiment"):
@@ -194,4 +201,59 @@ public class SystemsMenu
             System.out.println("Error: " + e.getMessage());
         }
     }
+
+    public static void quantumSystemMenu(Scanner sc)
+{
+    System.out.println("\n===== QUANTUM SYSTEM =====");
+
+    try
+    {
+        ComplexMatrices transitionMatrix = readSquareMatrix(sc, "Transition Matrix");
+
+        if (!unitaryChecker.IsUnitary(transitionMatrix))
+        {
+            System.out.println("Error: this matrix is not unitary (U† x U must be the identity).");
+            return;
+        }
+
+        int size = transitionMatrix.getRows();
+
+        System.out.println("Now enter the initial state (size must match the matrix: " + size + ").");
+        ComplexMatrices initialState = readVectorAsMatrix(sc, "Initial State");
+
+        if (initialState.getRows() != size)
+        {
+            System.out.println("Error: state vector size (" + initialState.getRows() +
+                ") must match the matrix size (" + size + ").");
+            return;
+        }
+
+        if (!quantumSystem.isNormalized(initialState))
+        {
+            System.out.println("Error: the initial state must have norm 1 (sum of squared moduli = 1).");
+            return;
+        }
+
+        int timeStep = readNonNegativeInt(sc, "Enter the number of time steps: ");
+
+        ComplexMatrices finalState = deterministicSystem.multipleStepDynamics(transitionMatrix, timeStep, initialState);
+
+        System.out.println("\n--- RESULT ---");
+        System.out.println("State after " + timeStep + " time step(s):");
+        System.out.println(finalState);
+
+        double[] probs = probabilities.fromState(finalState);
+
+        System.out.println("\nProbabilities:");
+        for (int i = 0; i < probs.length; i++)
+        {
+            System.out.printf("Position %d: %.2f%%%n", i, probs[i] * 100);
+        }
+        System.out.printf("Total: %.2f%%%n", probabilities.total(finalState) * 100);
+    }
+    catch (IllegalArgumentException e)
+    {
+        System.out.println("Error: " + e.getMessage());
+    }
+}
 }

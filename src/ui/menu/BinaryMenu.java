@@ -21,7 +21,8 @@ public class BinaryMenu
         System.out.println("[5] Deterministic System");
         System.out.println("[6] Probabilistic System");
         System.out.println("[7] Multi-Slit Experiment");
-        System.out.println("[8] Quantum Multi-Slit Experiment");
+        System.out.println("[8] Quantum System");
+        System.out.println("[9] Quantum Multi-Slit Experiment");
         System.out.println("[0] Back");
         System.out.println("=================================");
         System.out.print("Choose an option: ");
@@ -61,6 +62,12 @@ public class BinaryMenu
         }
 
         if (choice == 8)
+        {
+            SystemsMenu.quantumSystemMenu(sc);
+            return;
+        }
+
+        if (choice == 9)
         {
             SystemsMenu.quantumMultiSlitExperimentMenu(sc);
             return;
