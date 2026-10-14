@@ -1,18 +1,19 @@
 package ui.menu;
-
-import static ui.input.InputReader.readNonNegativeInt;
-import static ui.input.InputReader.readPositiveInt;
-import static ui.input.InputReader.readProbabilityMatrix;
-import static ui.input.InputReader.readProbabilityVector;
-import static ui.input.InputReader.readRectangularProbabilityMatrix;
-import static ui.input.InputReader.readSquareMatrix;
-import static ui.input.InputReader.readVectorAsMatrix;
-
+ 
 import java.util.Scanner;
 import math.linear.impl.ComplexMatrices;
 import math.systems.classical.Deterministic;
 import math.systems.probabilistic.Probabilistic;
 import math.systems.probabilistic.SlitsExperiment;
+import math.systems.quantum.QuantumSlitsExperiment;
+import static ui.input.InputReader.readNonNegativeInt;
+import static ui.input.InputReader.readPositiveInt;
+import static ui.input.InputReader.readProbabilityMatrix;
+import static ui.input.InputReader.readProbabilityVector;
+import static ui.input.InputReader.readRectangularComplexMatrix;
+import static ui.input.InputReader.readRectangularProbabilityMatrix;
+import static ui.input.InputReader.readSquareMatrix;
+import static ui.input.InputReader.readVectorAsMatrix;
 
 /**
  * Menus that run the system simulations: deterministic, probabilistic
@@ -21,6 +22,7 @@ import math.systems.probabilistic.SlitsExperiment;
  */
 public class SystemsMenu
 {
+    private static final QuantumSlitsExperiment quantumSlitsExperiment = new QuantumSlitsExperiment();
     private static final Deterministic deterministicSystem = new Deterministic();
     private static final Probabilistic probabilisticSystem = new Probabilistic();
     private static final SlitsExperiment slitsExperiment = new SlitsExperiment();
@@ -148,6 +150,43 @@ public class SystemsMenu
             System.out.println("Transition matrix squared (after two time clicks):");
             System.out.println(squaredMatrix);
             System.out.println("Resulting state vector (bullet starts at the gun):");
+            System.out.println(finalState);
+        }
+        catch (IllegalArgumentException e)
+        {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+
+    public static void quantumMultiSlitExperimentMenu(Scanner sc)
+    {
+        System.out.println("\n===== QUANTUM MULTI-SLIT EXPERIMENT =====");
+ 
+        try
+        {
+            int numSlits = readPositiveInt(sc, "Enter the number of slits: ");
+            int numTargets = readPositiveInt(sc, "Enter the number of targets: ");
+ 
+            System.out.println("Now enter the amplitude (a complex number) of each slit sending a photon to each target.");
+            ComplexMatrices amplitudes = readRectangularComplexMatrix(sc, numTargets, numSlits);
+ 
+            if (!quantumSlitsExperiment.isNormalizedPerSlit(amplitudes))
+            {
+                System.out.println("Error: for each slit, the squared moduli of its amplitudes to all targets must sum to 1.");
+                return;
+            }
+ 
+            ComplexMatrices transitionMatrix = quantumSlitsExperiment.buildTransitionMatrix(numSlits, numTargets, amplitudes);
+            ComplexMatrices squaredMatrix = transitionMatrix.matrixMultiplication(transitionMatrix);
+ 
+            ComplexMatrices initialState = quantumSlitsExperiment.createInitialState(transitionMatrix.getRows());
+            ComplexMatrices finalState = squaredMatrix.matrixMultiplication(initialState);
+ 
+            System.out.println("\n--- RESULT ---");
+            System.out.println("Transition matrix squared (after two time clicks):");
+            System.out.println(squaredMatrix);
+            System.out.println("Resulting state vector (photon starts at the flashlight):");
             System.out.println(finalState);
         }
         catch (IllegalArgumentException e)

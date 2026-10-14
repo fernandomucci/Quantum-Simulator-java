@@ -3,7 +3,7 @@ import math.core.ComplexNumber;
 import math.linear.impl.ComplexVector;
 
 /**
- * Interface que contém apenas as declarações (contrato) para operações de Vetores.
+ * Interface que contém apenas as declarações para operações de Vetores.
  */
 public interface IVector
 {

@@ -3,7 +3,7 @@ import math.core.ComplexNumber;
 import math.linear.impl.ComplexMatrices;
 
 /**
- * Interface que contém apenas as declarações (contrato) para operações de Matrizes.
+ * Interface que contém apenas as declarações para operações de Matrizes.
  */
 public interface IMatrix
 {
