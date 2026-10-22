@@ -1,18 +1,23 @@
 package ui.menu;
-
-import static ui.input.InputReader.readNonNegativeInt;
-import static ui.input.InputReader.readPositiveInt;
-import static ui.input.InputReader.readProbabilityMatrix;
-import static ui.input.InputReader.readProbabilityVector;
-import static ui.input.InputReader.readRectangularProbabilityMatrix;
-import static ui.input.InputReader.readSquareMatrix;
-import static ui.input.InputReader.readVectorAsMatrix;
-
+ 
 import java.util.Scanner;
+import math.linear.analysis.HermitianUnitaryMatrices;
+import math.linear.analysis.Probabilities;
 import math.linear.impl.ComplexMatrices;
 import math.systems.classical.Deterministic;
 import math.systems.probabilistic.Probabilistic;
 import math.systems.probabilistic.SlitsExperiment;
+import math.systems.quantum.QuantumSlitsExperiment;
+import math.systems.quantum.QuantumSystem;
+import static ui.input.InputReader.readNonNegativeInt;
+import static ui.input.InputReader.readPositiveInt;
+import static ui.input.InputReader.readProbabilityMatrix;
+import static ui.input.InputReader.readProbabilityVector;
+import static ui.input.InputReader.readRectangularComplexMatrix;
+import static ui.input.InputReader.readRectangularProbabilityMatrix;
+import static ui.input.InputReader.readSquareMatrix;
+import static ui.input.InputReader.readVectorAsMatrix;
+
 
 /**
  * Menus that run the system simulations: deterministic, probabilistic
@@ -21,9 +26,13 @@ import math.systems.probabilistic.SlitsExperiment;
  */
 public class SystemsMenu
 {
+    private static final QuantumSlitsExperiment quantumSlitsExperiment = new QuantumSlitsExperiment();
     private static final Deterministic deterministicSystem = new Deterministic();
     private static final Probabilistic probabilisticSystem = new Probabilistic();
     private static final SlitsExperiment slitsExperiment = new SlitsExperiment();
+    private static final HermitianUnitaryMatrices unitaryChecker = new HermitianUnitaryMatrices();
+    private static final QuantumSystem quantumSystem = new QuantumSystem();
+    private static final Probabilities probabilities = new Probabilities();
 
     /**
      * Runs a deterministic system simulation (the "marble experiment"):
@@ -155,4 +164,102 @@ public class SystemsMenu
             System.out.println("Error: " + e.getMessage());
         }
     }
+
+
+    public static void quantumMultiSlitExperimentMenu(Scanner sc)
+    {
+        System.out.println("\n===== QUANTUM MULTI-SLIT EXPERIMENT =====");
+ 
+        try
+        {
+            int numSlits = readPositiveInt(sc, "Enter the number of slits: ");
+            int numTargets = readPositiveInt(sc, "Enter the number of targets: ");
+ 
+            System.out.println("Now enter the amplitude (a complex number) of each slit sending a photon to each target.");
+            ComplexMatrices amplitudes = readRectangularComplexMatrix(sc, numTargets, numSlits);
+ 
+            if (!quantumSlitsExperiment.isNormalizedPerSlit(amplitudes))
+            {
+                System.out.println("Error: for each slit, the squared moduli of its amplitudes to all targets must sum to 1.");
+                return;
+            }
+ 
+            ComplexMatrices transitionMatrix = quantumSlitsExperiment.buildTransitionMatrix(numSlits, numTargets, amplitudes);
+            ComplexMatrices squaredMatrix = transitionMatrix.matrixMultiplication(transitionMatrix);
+ 
+            ComplexMatrices initialState = quantumSlitsExperiment.createInitialState(transitionMatrix.getRows());
+            ComplexMatrices finalState = squaredMatrix.matrixMultiplication(initialState);
+
+ 
+            System.out.println("\n--- RESULT ---");
+            System.out.println("Transition matrix squared (after two time clicks):");
+            System.out.println(squaredMatrix);
+            System.out.println("Resulting state vector (photon starts at the flashlight):");
+            System.out.println(finalState);
+            String interference = quantumSlitsExperiment.whereInterference(transitionMatrix, numSlits);
+            System.out.println("\nInterference analysis:");
+            System.out.println(interference.isEmpty() ? "No interference found." : interference);
+
+
+        }
+        catch (IllegalArgumentException e)
+        {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    public static void quantumSystemMenu(Scanner sc)
+{
+    System.out.println("\n===== QUANTUM SYSTEM =====");
+
+    try
+    {
+        ComplexMatrices transitionMatrix = readSquareMatrix(sc, "Transition Matrix");
+
+        if (!unitaryChecker.IsUnitary(transitionMatrix))
+        {
+            System.out.println("Error: this matrix is not unitary (U† x U must be the identity).");
+            return;
+        }
+
+        int size = transitionMatrix.getRows();
+
+        System.out.println("Now enter the initial state (size must match the matrix: " + size + ").");
+        ComplexMatrices initialState = readVectorAsMatrix(sc, "Initial State");
+
+        if (initialState.getRows() != size)
+        {
+            System.out.println("Error: state vector size (" + initialState.getRows() +
+                ") must match the matrix size (" + size + ").");
+            return;
+        }
+
+        if (!quantumSystem.isNormalized(initialState))
+        {
+            System.out.println("Error: the initial state must have norm 1 (sum of squared moduli = 1).");
+            return;
+        }
+
+        int timeStep = readNonNegativeInt(sc, "Enter the number of time steps: ");
+
+        ComplexMatrices finalState = deterministicSystem.multipleStepDynamics(transitionMatrix, timeStep, initialState);
+
+        System.out.println("\n--- RESULT ---");
+        System.out.println("State after " + timeStep + " time step(s):");
+        System.out.println(finalState);
+
+        double[] probs = probabilities.fromState(finalState);
+
+        System.out.println("\nProbabilities:");
+        for (int i = 0; i < probs.length; i++)
+        {
+            System.out.printf("Position %d: %.2f%%%n", i, probs[i] * 100);
+        }
+        System.out.printf("Total: %.2f%%%n", probabilities.total(finalState) * 100);
+    }
+    catch (IllegalArgumentException e)
+    {
+        System.out.println("Error: " + e.getMessage());
+    }
+}
 }

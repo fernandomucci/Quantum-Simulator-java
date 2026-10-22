@@ -188,6 +188,38 @@ public class InputReader
         return mat;
     }
 
+    /**
+     * Reads a (rows x cols) matrix of complex amplitudes, used for the
+     * slit-to-target matrix of the quantum multi-slit experiment. Each
+     * entry is asked again until it has a valid complex format.
+     */
+    public static ComplexMatrices readRectangularComplexMatrix(Scanner sc, int rows, int cols)
+    {
+        ComplexMatrices mat = new ComplexMatrices(rows, cols);
+
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < cols; j++)
+            {
+                while (true)
+                {
+                    try
+                    {
+                        System.out.print("Target [" + i + "] from Slit [" + j + "] (e.g., 0.5+0.5i): ");
+                        String input = sc.nextLine().replace(" ", "");
+                        mat.setElement(i, j, ComplexParser.parseComplex(input));
+                        break;
+                    }
+                    catch (IllegalArgumentException e)
+                    {
+                        System.out.println("Invalid format. Try again.");
+                    }
+                }
+            }
+        }
+        return mat;
+    }
+
     public static ComplexVector readVector(Scanner sc, String name) 
     {
         int size = 0;

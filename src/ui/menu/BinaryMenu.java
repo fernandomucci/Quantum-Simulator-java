@@ -1,9 +1,8 @@
 package ui.menu;
 
-import static ui.input.ComplexParser.parseComplex;
-
 import java.util.Scanner;
 import math.core.ComplexNumber;
+import static ui.input.ComplexParser.parseComplex;
 
 /**
  * Menu for operations between two complex numbers, plus the entry
@@ -22,6 +21,8 @@ public class BinaryMenu
         System.out.println("[5] Deterministic System");
         System.out.println("[6] Probabilistic System");
         System.out.println("[7] Multi-Slit Experiment");
+        System.out.println("[8] Quantum System");
+        System.out.println("[9] Quantum Multi-Slit Experiment");
         System.out.println("[0] Back");
         System.out.println("=================================");
         System.out.print("Choose an option: ");
@@ -57,6 +58,18 @@ public class BinaryMenu
         if (choice == 7)
         {
             SystemsMenu.multiSlitExperimentMenu(sc);
+            return;
+        }
+
+        if (choice == 8)
+        {
+            SystemsMenu.quantumSystemMenu(sc);
+            return;
+        }
+
+        if (choice == 9)
+        {
+            SystemsMenu.quantumMultiSlitExperimentMenu(sc);
             return;
         }
 
