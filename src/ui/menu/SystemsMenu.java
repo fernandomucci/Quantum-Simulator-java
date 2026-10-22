@@ -2,13 +2,13 @@ package ui.menu;
  
 import java.util.Scanner;
 import math.linear.analysis.HermitianUnitaryMatrices;
+import math.linear.analysis.Probabilities;
 import math.linear.impl.ComplexMatrices;
 import math.systems.classical.Deterministic;
 import math.systems.probabilistic.Probabilistic;
 import math.systems.probabilistic.SlitsExperiment;
 import math.systems.quantum.QuantumSlitsExperiment;
 import math.systems.quantum.QuantumSystem;
-import math.linear.analysis.Probabilities;
 import static ui.input.InputReader.readNonNegativeInt;
 import static ui.input.InputReader.readPositiveInt;
 import static ui.input.InputReader.readProbabilityMatrix;
@@ -189,12 +189,18 @@ public class SystemsMenu
  
             ComplexMatrices initialState = quantumSlitsExperiment.createInitialState(transitionMatrix.getRows());
             ComplexMatrices finalState = squaredMatrix.matrixMultiplication(initialState);
+
  
             System.out.println("\n--- RESULT ---");
             System.out.println("Transition matrix squared (after two time clicks):");
             System.out.println(squaredMatrix);
             System.out.println("Resulting state vector (photon starts at the flashlight):");
             System.out.println(finalState);
+            String interference = quantumSlitsExperiment.whereInterference(transitionMatrix, numSlits);
+            System.out.println("\nInterference analysis:");
+            System.out.println(interference.isEmpty() ? "No interference found." : interference);
+
+
         }
         catch (IllegalArgumentException e)
         {

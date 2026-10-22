@@ -122,6 +122,67 @@ public class QuantumSlitsExperiment
         return transition;
     }
 
+    public String whereInterference(ComplexMatrices transition, int numSlits)
+{
+    if (transition == null)
+    {
+        throw new IllegalArgumentException("the matrice cannot be null.");
+    }
+
+    double tolerance = 1e-9;
+    int size = transition.getRows();
+    StringBuilder report = new StringBuilder();
+
+    // The photon always starts at the flashlight (vertex 0), so only the
+    // paths 0 -> k -> target matter: that's column 0 of M^2, which costs
+    // O(n^2)
+    for (int target = 1 + numSlits; target < size; target++)
+    {
+        ComplexNumber amplitudeSum = new ComplexNumber(0, 0);
+        double classicalProbability = 0.0;
+        int pathCount = 0;
+
+        for (int k = 0; k < size; k++)
+        {
+            ComplexNumber path = transition.getElement(target, k).multiply(transition.getElement(k, 0));
+            double pathModulus = path.modulus();
+
+            // A zero amplitude is not a real path
+            if (pathModulus < tolerance)
+            {
+                continue;
+            }
+
+            pathCount++;
+            amplitudeSum = amplitudeSum.add(path);
+            classicalProbability += pathModulus * pathModulus;
+        }
+
+        // Interference needs at least two paths reaching the same target
+        if (pathCount < 2)
+        {
+            continue;
+        }
+
+        double sumModulus = amplitudeSum.modulus();
+        double quantumProbability = sumModulus * sumModulus;
+        int targetIndex = target - 1 - numSlits;
+
+        if (quantumProbability > classicalProbability + tolerance)
+        {
+            report.append(String.format("Target [%d]: constructive interference (classical %.2f -> quantum %.2f)%n",
+                targetIndex, classicalProbability, quantumProbability));
+        }
+        else if (quantumProbability < classicalProbability - tolerance)
+        {
+            report.append(String.format("Target [%d]: destructive interference (classical %.2f -> quantum %.2f)%n",
+                targetIndex, classicalProbability, quantumProbability));
+        }
+    }
+
+    return report.toString();
+}
+
     /**
      * Creates the initial state vector for the experiment: the photon
      * always starts at the flashlight (vertex 0) with certainty.
